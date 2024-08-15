@@ -1,34 +1,42 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    HttpCode,
+    Post,
+    Request,
+    UseGuards
+} from '@nestjs/common';
+import { LocalAuthGuard } from './guards/local.guard';
+import { ApiOperation } from '@nestjs/swagger';
+import { Public } from '../../common/decorators/public.decorator';
+import { RegisterDto } from './dto/register.dto';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+    constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
-  }
+    @Post('login')
+    @Public()
+    @UseGuards(LocalAuthGuard)
+    @HttpCode(200)
+    @ApiOperation({
+        description:
+            'Performs authentication and returns a JWT token if successful',
+        summary: 'Login'
+    })
+    async organizationLogin(@Request() req: any) {
+        return req.user;
+    }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
-  }
+    @Post('register')
+    @Public()
+    @HttpCode(200)
+    @ApiOperation({
+        description: 'Verifies email uniqueness and creates an account',
+        summary: 'Register'
+    })
+    register(@Body() registerDto: RegisterDto) {
+        return this.authService.register(registerDto);
+    }
 }

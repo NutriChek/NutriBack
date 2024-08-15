@@ -1,26 +1,52 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { DBService } from '../../common/services/db.service';
+import { JwtService } from '@nestjs/jwt';
+import { users } from '../../database/schema/users';
+import { eq } from 'drizzle-orm';
+import { BcryptUtils } from '../../common/utils/bcrypt.utils';
+import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
-export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
-  }
+export class AuthService extends DBService {
+    constructor(private readonly jwtService: JwtService) {
+        super();
+    }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+    async validateUser(
+        email: string,
+        password: string
+    ): Promise<{
+        token: string;
+    }> {
+        const user = (
+            await this.db
+                .select()
+                .from(users)
+                .where(eq(users.email, email))
+                .limit(1)
+        )[0];
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+        if (
+            user &&
+            (await BcryptUtils.comparePasswords(password, user.password))
+        ) {
+            return {
+                token: this.jwtService.sign({
+                    userID: user.id
+                })
+            };
+        }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+        return null;
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
+    async register(registerDto: RegisterDto) {
+        this.db.insert(users).values({
+            email: registerDto.email,
+            firstName: registerDto.firstName,
+            lastName: registerDto.lastName,
+            username: registerDto.username,
+            password: await BcryptUtils.hashPassword(registerDto.password)
+        });
+    }
 }
