@@ -41,7 +41,7 @@ export class AuthService extends DBService {
     }
 
     async register(registerDto: RegisterDto) {
-        this.db.insert(users).values({
+        await this.db.insert(users).values({
             email: registerDto.email,
             firstName: registerDto.firstName,
             lastName: registerDto.lastName,
