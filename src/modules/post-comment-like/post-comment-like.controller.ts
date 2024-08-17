@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { PostCommentLikeService } from './post-comment-like.service';
-import { CreatePostCommentLikeDto } from './dto/create-post-comment-like.dto';
+import { CreateLikeDto } from '../../common/dto/create-like.dto';
 
 @Controller()
 export class PostCommentLikeController {
@@ -9,14 +9,8 @@ export class PostCommentLikeController {
     ) {}
 
     @Post(':id')
-    create(
-        @Param('id') id: string,
-        @Body() createPostCommentLikeDto: CreatePostCommentLikeDto
-    ) {
-        return this.postCommentLikeService.create(
-            +id,
-            createPostCommentLikeDto
-        );
+    create(@Param('id') id: string, @Body() createLikeDto: CreateLikeDto) {
+        return this.postCommentLikeService.create(+id, createLikeDto);
     }
 
     @Delete(':id')

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { and, eq, sql } from 'drizzle-orm';
 import { DBService } from '../../common/services/db.service';
-import { CreateRecipeLikeDto } from './dto/create-recipe-like.dto';
 import { recipeLikes } from '../../database/schema/recipe-likes';
 import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
 import { recipes } from '../../database/schema/recipes';
+import { CreateLikeDto } from '../../common/dto/create-like.dto';
 
 @Injectable()
 export class RecipeLikeService extends DBService {
@@ -21,25 +21,25 @@ export class RecipeLikeService extends DBService {
         );
     }
 
-    async create(id: number, createRecipeLikeDto: CreateRecipeLikeDto) {
+    async create(id: number, createRecipeDto: CreateLikeDto) {
         const like = await this.getLike(id);
 
         if (like) {
-            if (like.like !== createRecipeLikeDto.like) {
+            if (like.like !== createRecipeDto.like) {
                 await this.db
                     .update(recipeLikes)
                     .set({
-                        like: createRecipeLikeDto.like
+                        like: createRecipeDto.like
                     })
                     .where(this.isUser(id));
 
                 await this.db.update(recipes).set({
-                    likes: sql`${recipes.likes} + ${createRecipeLikeDto.like ? 1 : -1}`,
-                    dislikes: sql`${recipes.dislikes} + ${createRecipeLikeDto.like ? -1 : 1}`
+                    likes: sql`${recipes.likes} + ${createRecipeDto.like ? 1 : -1}`,
+                    dislikes: sql`${recipes.dislikes} + ${createRecipeDto.like ? -1 : 1}`
                 });
             }
         } else {
-            if (createRecipeLikeDto.like) {
+            if (createRecipeDto.like) {
                 await this.db.update(recipes).set({
                     likes: sql`${recipes.likes} + 1`
                 });
@@ -50,7 +50,7 @@ export class RecipeLikeService extends DBService {
             }
 
             await this.db.insert(recipeLikes).values({
-                like: createRecipeLikeDto.like,
+                like: createRecipeDto.like,
                 recipeID: id,
                 userID: this.userID
             });
