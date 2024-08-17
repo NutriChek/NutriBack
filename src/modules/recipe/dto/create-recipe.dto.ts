@@ -5,7 +5,7 @@ export class CreateRecipeDto {
     @IsString()
     @Length(1, 100)
     @ApiProperty()
-    title: string;
+    name: string;
 
     @IsString()
     @Length(1, 5000)
@@ -17,6 +17,4 @@ export class CreateRecipeDto {
     @IsArray()
     @ApiProperty()
     steps: string[];
-
-
 }

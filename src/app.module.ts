@@ -12,6 +12,7 @@ import { PostCommentModule } from './modules/post-comment/post-comment.module';
 import { RecipeModule } from './modules/recipe/recipe.module';
 import { RecipeLikeModule } from './modules/recipe-like/recipe-like.module';
 import { FollowModule } from './modules/follow/follow.module';
+import { RecipePackModule } from './modules/recipe-pack/recipe-pack.module';
 
 @Module({
     imports: [
@@ -25,7 +26,8 @@ import { FollowModule } from './modules/follow/follow.module';
         PostCommentLikeModule,
         RecipeModule,
         RecipeLikeModule,
-        FollowModule
+        FollowModule,
+        RecipePackModule
     ],
     controllers: [],
     providers: [

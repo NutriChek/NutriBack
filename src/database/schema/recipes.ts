@@ -3,7 +3,7 @@ import { users } from './users';
 
 export const recipes = pgTable('Recipe', {
     id: serial('id').primaryKey(),
-    title: text('title').notNull(),
+    name: text('name').notNull(),
     description: text('description').notNull(),
     likes: integer('likes').notNull().default(0),
     dislikes: integer('dislikes').notNull().default(0),

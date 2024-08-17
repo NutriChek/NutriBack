@@ -15,7 +15,7 @@ export class RecipeService extends DBService {
         return this.db
             .insert(recipes)
             .values({
-                title: createRecipeDto.title,
+                name: createRecipeDto.name,
                 description: createRecipeDto.description,
                 steps: createRecipeDto.steps,
                 userID: this.userID
@@ -29,7 +29,7 @@ export class RecipeService extends DBService {
         return this.db
             .select({
                 id: recipes.id,
-                title: recipes.title,
+                name: recipes.name,
                 createdAt: posts.createdAt,
                 likes: recipes.likes,
                 dislikes: recipes.dislikes,
@@ -52,7 +52,7 @@ export class RecipeService extends DBService {
             this.db
                 .select({
                     id: recipes.id,
-                    title: recipes.title,
+                    name: recipes.name,
                     description: recipes.description,
                     steps: recipes.steps,
                     createdAt: posts.createdAt,
@@ -78,7 +78,7 @@ export class RecipeService extends DBService {
         await this.db
             .update(recipes)
             .set({
-                title: updateRecipeDto.title,
+                name: updateRecipeDto.name,
                 description: updateRecipeDto.description,
                 steps: updateRecipeDto.steps
             })

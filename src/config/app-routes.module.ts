@@ -6,11 +6,17 @@ import { PostLikeModule } from '../modules/post-like/post-like.module';
 import { PostCommentLikeModule } from '../modules/post-comment-like/post-comment-like.module';
 import { RecipeModule } from '../modules/recipe/recipe.module';
 import { RecipeLikeModule } from '../modules/recipe-like/recipe-like.module';
+import { FollowModule } from '../modules/follow/follow.module';
+import { RecipePackModule } from '../modules/recipe-pack/recipe-pack.module';
 
 const routes: Routes = [
     {
         path: 'auth',
         module: AuthModule
+    },
+    {
+        path: 'follow',
+        module: FollowModule
     },
     {
         path: 'post',
@@ -41,6 +47,10 @@ const routes: Routes = [
                 module: RecipeLikeModule
             }
         ]
+    },
+    {
+        path: 'recipe-pack',
+        module: RecipePackModule
     }
 ];
 
