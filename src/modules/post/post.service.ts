@@ -16,7 +16,8 @@ export class PostService extends DBService {
             .values({
                 body: createPostDto.body,
                 title: createPostDto.title,
-                userID: this.userID
+                userID: this.userID,
+                recipeID: createPostDto.recipeID
             })
             .returning({
                 id: posts.id
@@ -46,27 +47,29 @@ export class PostService extends DBService {
     }
 
     findOne(id: number) {
-        return this.db
-            .select({
-                id: posts.id,
-                title: posts.title,
-                createdAt: posts.createdAt,
-                body: posts.body,
-                likes: posts.likes,
-                dislikes: posts.dislikes,
-                user: SqlShortcuts.userObject,
-                liked: postLikes.like
-            })
-            .from(posts)
-            .innerJoin(users, eq(users.id, posts.userID))
-            .leftJoin(
-                postLikes,
-                and(
-                    eq(postLikes.userID, this.userID),
-                    eq(postLikes.postID, posts.id)
+        return SqlShortcuts.first(
+            this.db
+                .select({
+                    id: posts.id,
+                    title: posts.title,
+                    body: posts.body,
+                    createdAt: posts.createdAt,
+                    likes: posts.likes,
+                    dislikes: posts.dislikes,
+                    user: SqlShortcuts.userObject,
+                    liked: postLikes.like
+                })
+                .from(posts)
+                .innerJoin(users, eq(users.id, posts.userID))
+                .leftJoin(
+                    postLikes,
+                    and(
+                        eq(postLikes.userID, this.userID),
+                        eq(postLikes.postID, posts.id)
+                    )
                 )
-            )
-            .where(eq(posts.id, id));
+                .where(eq(posts.id, id))
+        );
     }
 
     async update(id: number, updatePostDto: UpdatePostDto) {

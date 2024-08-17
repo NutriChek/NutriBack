@@ -15,5 +15,5 @@ export const postComments = pgTable('Comment', {
         .references(() => users.id),
     postID: integer('postID')
         .notNull()
-        .references(() => posts.id)
+        .references(() => posts.id, { onDelete: 'cascade' })
 });

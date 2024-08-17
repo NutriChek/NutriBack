@@ -4,6 +4,8 @@ import { PostModule } from '../modules/post/post.module';
 import { PostCommentModule } from '../modules/post-comment/post-comment.module';
 import { PostLikeModule } from '../modules/post-like/post-like.module';
 import { PostCommentLikeModule } from '../modules/post-comment-like/post-comment-like.module';
+import { RecipeModule } from '../modules/recipe/recipe.module';
+import { RecipeLikeModule } from '../modules/recipe-like/recipe-like.module';
 
 const routes: Routes = [
     {
@@ -27,6 +29,16 @@ const routes: Routes = [
             {
                 path: 'like',
                 module: PostLikeModule
+            }
+        ]
+    },
+    {
+        path: 'recipe',
+        module: RecipeModule,
+        children: [
+            {
+                path: 'like',
+                module: RecipeLikeModule
             }
         ]
     }

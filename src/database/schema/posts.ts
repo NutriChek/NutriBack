@@ -1,5 +1,6 @@
 import { integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 import { users } from './users';
+import { recipes } from './recipes';
 
 export const posts = pgTable('Post', {
     id: serial('id').primaryKey(),
@@ -12,5 +13,6 @@ export const posts = pgTable('Post', {
         .defaultNow(),
     userID: integer('userID')
         .notNull()
-        .references(() => users.id)
+        .references(() => users.id),
+    recipeID: integer('recipeID').references(() => recipes.id)
 });

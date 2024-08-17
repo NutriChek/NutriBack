@@ -9,6 +9,9 @@ import { PostModule } from './modules/post/post.module';
 import { PostCommentLikeModule } from './modules/post-comment-like/post-comment-like.module';
 import { PostLikeModule } from './modules/post-like/post-like.module';
 import { PostCommentModule } from './modules/post-comment/post-comment.module';
+import { RecipeModule } from './modules/recipe/recipe.module';
+import { RecipeLikeModule } from './modules/recipe-like/recipe-like.module';
+import { FollowModule } from './modules/follow/follow.module';
 
 @Module({
     imports: [
@@ -19,7 +22,10 @@ import { PostCommentModule } from './modules/post-comment/post-comment.module';
         PostModule,
         PostCommentModule,
         PostLikeModule,
-        PostCommentLikeModule
+        PostCommentLikeModule,
+        RecipeModule,
+        RecipeLikeModule,
+        FollowModule
     ],
     controllers: [],
     providers: [
