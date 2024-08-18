@@ -13,6 +13,7 @@ import { RecipeModule } from './modules/recipe/recipe.module';
 import { RecipeLikeModule } from './modules/recipe-like/recipe-like.module';
 import { FollowModule } from './modules/follow/follow.module';
 import { RecipePackModule } from './modules/recipe-pack/recipe-pack.module';
+import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
     imports: [
@@ -27,7 +28,8 @@ import { RecipePackModule } from './modules/recipe-pack/recipe-pack.module';
         RecipeModule,
         RecipeLikeModule,
         FollowModule,
-        RecipePackModule
+        RecipePackModule,
+        ProfileModule
     ],
     controllers: [],
     providers: [
