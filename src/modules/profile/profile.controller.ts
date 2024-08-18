@@ -1,23 +1,33 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Patch } from '@nestjs/common';
 import { ProfileService } from './profile.service';
-import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UpdateBodyProfileDto } from './dto/update-body-profile.dto';
+import { UpdateNutritionalPreferencesDto } from './dto/update-nutritional-preferences.dto';
 
-@Controller('profile')
+@Controller()
 export class ProfileController {
     constructor(private readonly profileService: ProfileService) {}
 
-    @Get()
-    findOwn() {
-        return this.profileService.findOwn();
+    @Get('body-profile')
+    findBodyProfile() {
+        return this.profileService.findBodyProfile();
     }
 
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.profileService.findOne(+id);
+    @Get('nutritional-preferences')
+    findNutritionalPreferences() {
+        return this.profileService.findNutritionalPreferences();
     }
 
-    @Patch()
-    update(@Body() updateProfileDto: UpdateProfileDto) {
-        return this.profileService.update(updateProfileDto);
+    @Patch('body-profile')
+    updateBodyProfile(@Body() updateBodyProfileDto: UpdateBodyProfileDto) {
+        return this.profileService.updateBodyProfile(updateBodyProfileDto);
+    }
+
+    @Patch('nutritional-preferences')
+    updateNutritionalPreferences(
+        @Body() updateNutritionalPreferencesDto: UpdateNutritionalPreferencesDto
+    ) {
+        return this.profileService.updateNutritionalPreferences(
+            updateNutritionalPreferencesDto
+        );
     }
 }

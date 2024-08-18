@@ -9,11 +9,16 @@ import { RecipeLikeModule } from '../modules/recipe-like/recipe-like.module';
 import { FollowModule } from '../modules/follow/follow.module';
 import { RecipePackModule } from '../modules/recipe-pack/recipe-pack.module';
 import { ProfileModule } from '../modules/profile/profile.module';
+import { AccountModule } from '../modules/account/account.module';
 
 const routes: Routes = [
     {
         path: 'auth',
         module: AuthModule
+    },
+    {
+        path: 'account',
+        module: AccountModule
     },
     {
         path: 'profile',
