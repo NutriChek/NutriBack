@@ -1,7 +1,7 @@
 import { Controller, Delete, Param, Post } from '@nestjs/common';
 import { FollowService } from './follow.service';
 
-@Controller('follow')
+@Controller()
 export class FollowController {
     constructor(private readonly followService: FollowService) {}
 

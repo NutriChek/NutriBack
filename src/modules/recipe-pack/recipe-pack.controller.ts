@@ -11,7 +11,7 @@ import { RecipePackService } from './recipe-pack.service';
 import { CreateRecipePackDto } from './dto/create-recipe-pack.dto';
 import { UpdateRecipePackDto } from './dto/update-recipe-pack.dto';
 
-@Controller('recipe-pack')
+@Controller()
 export class RecipePackController {
     constructor(private readonly recipePackService: RecipePackService) {}
 
