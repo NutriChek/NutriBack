@@ -7,6 +7,7 @@ import { users } from '../../database/schema/users';
 import { and, eq } from 'drizzle-orm';
 import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
 import { postLikes } from '../../database/schema/post-likes';
+import { recipes } from '../../database/schema/recipes';
 
 @Injectable()
 export class PostService extends DBService {
@@ -20,7 +21,8 @@ export class PostService extends DBService {
                 recipeID: createPostDto.recipeID
             })
             .returning({
-                id: posts.id
+                id: posts.id,
+                createdAt: recipes.createdAt
             });
     }
 
@@ -69,6 +71,7 @@ export class PostService extends DBService {
                     )
                 )
                 .where(eq(posts.id, id))
+                .limit(1)
         );
     }
 

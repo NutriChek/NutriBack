@@ -15,6 +15,9 @@ export class RecipePackService extends DBService {
             .insert(recipePacks)
             .values({
                 name: createRecipePackDto.name,
+                private: createRecipePackDto.private,
+                price: createRecipePackDto.price,
+                tierID: createRecipePackDto.tierID,
                 userID: this.userID
             })
             .returning({
@@ -60,7 +63,10 @@ export class RecipePackService extends DBService {
         await this.db
             .update(recipePacks)
             .set({
-                name: updateRecipePackDto.name
+                name: updateRecipePackDto.name,
+                private: updateRecipePackDto.private,
+                price: updateRecipePackDto.price,
+                tierID: updateRecipePackDto.tierID
             })
             .where(
                 and(eq(recipePacks.id, id), eq(recipePacks.userID, this.userID))

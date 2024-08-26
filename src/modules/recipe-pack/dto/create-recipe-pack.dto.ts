@@ -1,4 +1,10 @@
-import { IsString, Length } from 'class-validator';
+import {
+    IsBoolean,
+    IsInt,
+    IsOptional,
+    IsString,
+    Length
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRecipePackDto {
@@ -6,4 +12,18 @@ export class CreateRecipePackDto {
     @Length(1, 100)
     @ApiProperty()
     name: string;
+
+    @IsBoolean()
+    @ApiProperty()
+    private: boolean;
+
+    @IsInt()
+    @IsOptional()
+    @ApiProperty()
+    tierID?: number;
+
+    @IsInt()
+    @IsOptional()
+    @ApiProperty()
+    price?: number;
 }

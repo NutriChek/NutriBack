@@ -16,6 +16,9 @@ import { RecipePackModule } from './modules/recipe-pack/recipe-pack.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { AccountModule } from './modules/account/account.module';
 import { FileStorageModule } from './config/file-storage.module';
+import { FileServeModule } from './config/file-serve.module';
+import { TierModule } from './modules/tier/tier.module';
+import { PremiumModule } from './modules/premium/premium.module';
 
 @Module({
     imports: [
@@ -23,6 +26,7 @@ import { FileStorageModule } from './config/file-storage.module';
         AppRoutesModule,
         LocalStorageModule,
         FileStorageModule,
+        FileServeModule,
         AuthModule,
         PostModule,
         PostCommentModule,
@@ -33,9 +37,10 @@ import { FileStorageModule } from './config/file-storage.module';
         FollowModule,
         RecipePackModule,
         ProfileModule,
-        AccountModule
+        AccountModule,
+        TierModule,
+        PremiumModule
     ],
-    controllers: [],
     providers: [
         {
             provide: APP_GUARD,

@@ -1,4 +1,5 @@
 import {
+    boolean,
     integer,
     jsonb,
     pgEnum,
@@ -26,6 +27,9 @@ export const recipes = pgTable('Recipe', {
     allergens: text('allergens').array().notNull(),
     complexity: complexityEnum('complexity').notNull(),
     duration: integer('duration').notNull(),
+    private: boolean('private').notNull(),
+    price: integer('price'),
+    images: text('images').array().notNull(),
     likes: integer('likes').notNull().default(0),
     dislikes: integer('dislikes').notNull().default(0),
     createdAt: timestamp('createdAt', { withTimezone: true })
@@ -36,6 +40,5 @@ export const recipes = pgTable('Recipe', {
         .references(() => users.id),
     tierID: integer('tierID').references(() => tiers.id, {
         onDelete: 'set null'
-    }),
-    price: integer('price')
+    })
 });

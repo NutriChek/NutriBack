@@ -9,6 +9,15 @@ import { BcryptUtils } from '../../common/utils/bcrypt.utils';
 
 @Injectable()
 export class AccountService extends DBService {
+    async updatePicture(file: Express.Multer.File) {
+        await this.db
+            .update(users)
+            .set({
+                picture: file.filename
+            })
+            .where(eq(users.id, this.userID));
+    }
+
     findOwn() {
         return SqlShortcuts.first(
             this.db
