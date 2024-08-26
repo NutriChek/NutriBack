@@ -1,6 +1,7 @@
 import { integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 import { users } from './users';
 import { recipes } from './recipes';
+import { tiers } from './tiers';
 
 export const posts = pgTable('Post', {
     id: serial('id').primaryKey(),
@@ -14,5 +15,8 @@ export const posts = pgTable('Post', {
     userID: integer('userID')
         .notNull()
         .references(() => users.id),
-    recipeID: integer('recipeID').references(() => recipes.id)
+    recipeID: integer('recipeID').references(() => recipes.id),
+    tierID: integer('tierID').references(() => tiers.id, {
+        onDelete: 'set null'
+    })
 });

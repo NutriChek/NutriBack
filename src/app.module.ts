@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from './config/database.module';
 import { AppRoutesModule } from './config/app-routes.module';
-import { LocalStorageModule } from './config/cls.module';
+import { LocalStorageModule } from './config/local-storage.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthenticatedGuard } from './shared/guards/auth.guard';
@@ -15,12 +15,14 @@ import { FollowModule } from './modules/follow/follow.module';
 import { RecipePackModule } from './modules/recipe-pack/recipe-pack.module';
 import { ProfileModule } from './modules/profile/profile.module';
 import { AccountModule } from './modules/account/account.module';
+import { FileStorageModule } from './config/file-storage.module';
 
 @Module({
     imports: [
         DatabaseModule,
         AppRoutesModule,
         LocalStorageModule,
+        FileStorageModule,
         AuthModule,
         PostModule,
         PostCommentModule,

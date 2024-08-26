@@ -22,7 +22,12 @@ export class RecipePackService extends DBService {
             });
     }
 
-    addRecipe(recipePackID: number, recipeID: number) {}
+    async addRecipe(recipePackID: number, recipeID: number) {
+        await this.db.insert(recipesToRecipePacks).values({
+            recipePackID,
+            recipeID
+        });
+    }
 
     findAll(id: number) {
         return this.db
@@ -62,7 +67,16 @@ export class RecipePackService extends DBService {
             );
     }
 
-    removeRecipe(recipePackID: number, recipeID: number) {}
+    async removeRecipe(recipePackID: number, recipeID: number) {
+        await this.db
+            .delete(recipesToRecipePacks)
+            .where(
+                and(
+                    eq(recipesToRecipePacks.recipePackID, recipePackID),
+                    eq(recipesToRecipePacks.recipeID, recipeID)
+                )
+            );
+    }
 
     async remove(id: number) {
         await this.db
