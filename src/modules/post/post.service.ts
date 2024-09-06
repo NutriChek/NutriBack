@@ -4,7 +4,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { DBService } from '../../common/services/db.service';
 import { posts } from '../../database/schema/posts';
 import { users } from '../../database/schema/users';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, exists } from 'drizzle-orm';
 import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
 import { postLikes } from '../../database/schema/post-likes';
 import { recipes } from '../../database/schema/recipes';
@@ -33,9 +33,8 @@ export class PostService extends DBService {
                 title: posts.title,
                 createdAt: posts.createdAt,
                 likes: posts.likes,
-                dislikes: posts.dislikes,
                 user: SqlShortcuts.userObject,
-                liked: postLikes.like
+                liked: exists(postLikes)
             })
             .from(posts)
             .innerJoin(users, eq(users.id, posts.userID))
@@ -57,9 +56,8 @@ export class PostService extends DBService {
                     body: posts.body,
                     createdAt: posts.createdAt,
                     likes: posts.likes,
-                    dislikes: posts.dislikes,
                     user: SqlShortcuts.userObject,
-                    liked: postLikes.like
+                    liked: exists(postLikes)
                 })
                 .from(posts)
                 .innerJoin(users, eq(users.id, posts.userID))

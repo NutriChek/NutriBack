@@ -10,5 +10,6 @@ export const users = pgTable('User', {
     password: text('password').notNull(),
     premium: boolean('premium').notNull().default(false),
     followers: integer('followers').notNull().default(0),
-    following: integer('following').notNull().default(0)
+    following: integer('following').notNull().default(0),
+    pushNotificationToken: text('pushNotificationToken')
 });

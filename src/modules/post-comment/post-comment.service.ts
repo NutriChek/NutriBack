@@ -4,7 +4,7 @@ import { UpdatePostCommentDto } from './dto/update-post-comment.dto';
 import { DBService } from '../../common/services/db.service';
 import { postComments } from '../../database/schema/post-comments';
 import { users } from '../../database/schema/users';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, exists } from 'drizzle-orm';
 import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
 import { postCommentLikes } from '../../database/schema/post-comment-likes';
 
@@ -30,9 +30,8 @@ export class PostCommentService extends DBService {
                 body: postComments.body,
                 createdAt: postComments.createdAt,
                 likes: postComments.likes,
-                dislikes: postComments.dislikes,
                 user: SqlShortcuts.userObject,
-                liked: postCommentLikes.like
+                liked: exists(postCommentLikes)
             })
             .from(postComments)
             .innerJoin(users, eq(users.id, postComments.userID))

@@ -16,7 +16,8 @@ export class AuthService extends DBService {
 
     async validateUser(
         email: string,
-        password: string
+        password: string,
+        pushToken: string
     ): Promise<{
         token: string;
     }> {
@@ -32,9 +33,17 @@ export class AuthService extends DBService {
             user &&
             (await BcryptUtils.comparePasswords(password, user.password))
         ) {
+            await this.db
+                .update(users)
+                .set({
+                    pushNotificationToken: pushToken
+                })
+                .where(eq(users.id, user.id));
+
             return {
                 token: this.jwtService.sign({
-                    userID: user.id
+                    userID: user.id,
+                    pushToken
                 })
             };
         }

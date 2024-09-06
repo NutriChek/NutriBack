@@ -4,7 +4,7 @@ import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { DBService } from '../../common/services/db.service';
 import { recipes } from '../../database/schema/recipes';
 import { users } from '../../database/schema/users';
-import { and, eq, or } from 'drizzle-orm';
+import { and, eq, exists, or } from 'drizzle-orm';
 import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
 import { postLikes } from '../../database/schema/post-likes';
 import { posts } from '../../database/schema/posts';
@@ -42,9 +42,8 @@ export class RecipeService extends DBService {
                 name: recipes.name,
                 createdAt: posts.createdAt,
                 likes: recipes.likes,
-                dislikes: recipes.dislikes,
                 user: SqlShortcuts.userObject,
-                liked: postLikes.like
+                liked: exists(postLikes)
             })
             .from(recipes)
             .innerJoin(users, eq(users.id, recipes.userID))
@@ -73,9 +72,8 @@ export class RecipeService extends DBService {
                     duration: recipes.duration,
                     createdAt: posts.createdAt,
                     likes: recipes.likes,
-                    dislikes: recipes.dislikes,
                     user: SqlShortcuts.userObject,
-                    liked: postLikes.like
+                    liked: exists(postLikes)
                 })
                 .from(recipes)
                 .innerJoin(users, eq(users.id, recipes.userID))

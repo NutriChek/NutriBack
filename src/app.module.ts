@@ -19,6 +19,8 @@ import { FileStorageModule } from './config/file-storage.module';
 import { FileServeModule } from './config/file-serve.module';
 import { TierModule } from './modules/tier/tier.module';
 import { PremiumModule } from './modules/premium/premium.module';
+import { GoalModule } from './modules/goal/goal.module';
+import { IntelligenceModule } from './modules/intelligence/intelligence.module';
 
 @Module({
     imports: [
@@ -39,7 +41,9 @@ import { PremiumModule } from './modules/premium/premium.module';
         ProfileModule,
         AccountModule,
         TierModule,
-        PremiumModule
+        PremiumModule,
+        GoalModule,
+        IntelligenceModule
     ],
     providers: [
         {

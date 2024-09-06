@@ -6,7 +6,6 @@ export const postComments = pgTable('Comment', {
     id: serial('id').primaryKey(),
     body: text('body').notNull(),
     likes: integer('likes').notNull().default(0),
-    dislikes: integer('dislikes').notNull().default(0),
     createdAt: timestamp('createdAt', { withTimezone: true })
         .notNull()
         .defaultNow(),

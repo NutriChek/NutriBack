@@ -31,7 +31,6 @@ export const recipes = pgTable('Recipe', {
     price: integer('price'),
     images: text('images').array().notNull(),
     likes: integer('likes').notNull().default(0),
-    dislikes: integer('dislikes').notNull().default(0),
     createdAt: timestamp('createdAt', { withTimezone: true })
         .notNull()
         .defaultNow(),

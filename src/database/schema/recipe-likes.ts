@@ -1,4 +1,4 @@
-import { boolean, integer, pgTable, primaryKey } from 'drizzle-orm/pg-core';
+import { integer, pgTable, primaryKey } from 'drizzle-orm/pg-core';
 import { users } from './users';
 import { recipes } from './recipes';
 
@@ -12,8 +12,7 @@ export const recipeLikes = pgTable(
             }),
         userID: integer('userID')
             .notNull()
-            .references(() => users.id),
-        like: boolean('like').notNull()
+            .references(() => users.id)
     },
     (table) => ({
         pk: primaryKey({

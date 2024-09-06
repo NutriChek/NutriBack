@@ -48,7 +48,14 @@ export class RecipePackService extends DBService {
                 id: recipePacks.id,
                 name: recipePacks.name,
                 user: SqlShortcuts.userObject,
-                recipes: sql`JSONB_BUILD_OBJECT('id', ${recipes.id}, 'name', ${recipes.name}, 'likes', ${recipes.likes}, 'dislikes', ${recipes.dislikes})`
+                recipes: sql`JSONB_BUILD_OBJECT
+                ('id',
+                ${recipes.id},
+                'name',
+                ${recipes.name},
+                'likes',
+                ${recipes.likes}
+                )`
             })
             .from(recipePacks)
             .leftJoin(

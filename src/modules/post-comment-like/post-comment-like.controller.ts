@@ -9,8 +9,8 @@ export class PostCommentLikeController {
     ) {}
 
     @Post(':id')
-    create(@Param('id') id: string, @Body() createLikeDto: CreateLikeDto) {
-        return this.postCommentLikeService.create(+id, createLikeDto);
+    create(@Param('id') id: string) {
+        return this.postCommentLikeService.create(+id);
     }
 
     @Delete(':id')
