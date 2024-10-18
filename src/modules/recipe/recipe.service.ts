@@ -4,7 +4,7 @@ import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { DBService } from '../../common/services/db.service';
 import { recipes } from '../../database/schema/recipes';
 import { users } from '../../database/schema/users';
-import { and, eq, exists, or } from 'drizzle-orm';
+import { and, eq, exists, or, sql } from 'drizzle-orm';
 import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
 import { postLikes } from '../../database/schema/post-likes';
 import { posts } from '../../database/schema/posts';
@@ -35,27 +35,16 @@ export class RecipeService extends DBService {
             });
     }
 
-    findAll() {
+    findRandom() {
+        // language=SQL format=false
         return this.db
-            .select({
-                id: recipes.id,
-                name: recipes.name,
-                createdAt: posts.createdAt,
-                likes: recipes.likes,
-                user: SqlShortcuts.userObject,
-                liked: exists(postLikes)
-            })
+            .select()
             .from(recipes)
-            .innerJoin(users, eq(users.id, recipes.userID))
-            .leftJoin(
-                postLikes,
-                and(
-                    eq(postLikes.userID, this.userID),
-                    eq(postLikes.postID, posts.id)
-                )
-            )
-            .where(eq(recipes.private, false));
+            .orderBy(sql`RANDOM()`)
+            .limit(5);
     }
+
+    findRecommended() {}
 
     findOne(id: number) {
         return SqlShortcuts.first(

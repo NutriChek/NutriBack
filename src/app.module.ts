@@ -21,6 +21,7 @@ import { TierModule } from './modules/tier/tier.module';
 import { PremiumModule } from './modules/premium/premium.module';
 import { GoalModule } from './modules/goal/goal.module';
 import { IntelligenceModule } from './modules/intelligence/intelligence.module';
+import { AiModule } from './modules/ai/ai.module';
 
 @Module({
     imports: [
@@ -43,7 +44,8 @@ import { IntelligenceModule } from './modules/intelligence/intelligence.module';
         TierModule,
         PremiumModule,
         GoalModule,
-        IntelligenceModule
+        IntelligenceModule,
+        AiModule
     ],
     providers: [
         {

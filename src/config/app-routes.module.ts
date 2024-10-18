@@ -10,6 +10,7 @@ import { FollowModule } from '../modules/follow/follow.module';
 import { RecipePackModule } from '../modules/recipe-pack/recipe-pack.module';
 import { ProfileModule } from '../modules/profile/profile.module';
 import { AccountModule } from '../modules/account/account.module';
+import { AiModule } from '../modules/ai/ai.module';
 
 const routes: Routes = [
     {
@@ -61,6 +62,10 @@ const routes: Routes = [
     {
         path: 'recipe-pack',
         module: RecipePackModule
+    },
+    {
+        path: 'ai',
+        module: AiModule
     }
 ];
 

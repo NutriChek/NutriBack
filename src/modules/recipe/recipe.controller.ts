@@ -20,9 +20,14 @@ export class RecipeController {
         return this.recipeService.create(createRecipeDto);
     }
 
-    @Get()
-    findAll() {
-        return this.recipeService.findAll();
+    @Get('random')
+    findRandom() {
+        return this.recipeService.findRandom();
+    }
+
+    @Get('recommended')
+    findRecommended() {
+        return this.recipeService.findRecommended();
     }
 
     @Get(':id')
