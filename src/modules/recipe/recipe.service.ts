@@ -1,0 +1,281 @@
+import { Injectable } from '@nestjs/common';
+import { CreateRecipeDto } from './dto/create-recipe.dto';
+import { UpdateRecipeDto } from './dto/update-recipe.dto';
+import { DBService } from '../../common/services/db.service';
+import { recipes } from '@db/recipes';
+import { and, eq, gt, gte, inArray, lte, SQL, sql } from 'drizzle-orm';
+import { users } from '@db/users';
+import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
+import { SearchRecipeDto } from './dto/search-recipe.dto';
+
+@Injectable()
+export class RecipeService extends DBService {
+  private readonly shortRecipeObject = {
+    id: recipes.id,
+    author: SqlShortcuts.userObject,
+    name: recipes.name,
+    description: recipes.description,
+    cookingTime: recipes.cookingTime,
+    images: recipes.images,
+    tags: recipes.tags,
+    difficulty: recipes.difficulty,
+    likesCount: recipes.likesCount,
+    ingredientsCount: recipes.ingredientsCount,
+    calories: recipes.calories
+  };
+
+  async create(createRecipeDto: CreateRecipeDto) {
+    await this.db.insert(recipes).values({
+      name: createRecipeDto.name,
+      description: createRecipeDto.description,
+      ingredientsCount: createRecipeDto.ingredients.length,
+      tags: createRecipeDto.tags,
+      preparationTime: createRecipeDto.preparationTime,
+      cookingTime: createRecipeDto.cookingTime,
+      steps: createRecipeDto.steps,
+      source: 'nutricheck',
+      stepsCount: createRecipeDto.steps.length,
+      ingredients: createRecipeDto.ingredients,
+      calories: createRecipeDto.calories,
+      carbohydrates: createRecipeDto.carbohydrates,
+      fiber: createRecipeDto.fiber,
+      protein: createRecipeDto.protein,
+      saturatedFat: createRecipeDto.saturatedFat,
+      totalFat: createRecipeDto.totalFat,
+      sodium: createRecipeDto.sodium,
+      sugar: createRecipeDto.sugar,
+      cholesterol: createRecipeDto.cholesterol,
+      difficulty: createRecipeDto.difficulty,
+      authorID: this.userID,
+      images: []
+    });
+  }
+
+  search(searchRecipeDto: SearchRecipeDto) {
+    const conditions: SQL[] = [];
+
+    if (searchRecipeDto.minCalories) {
+      conditions.push(gte(recipes.calories, searchRecipeDto.minCalories));
+    }
+
+    if (searchRecipeDto.maxCalories) {
+      conditions.push(lte(recipes.calories, searchRecipeDto.maxCalories));
+    }
+
+    if (searchRecipeDto.minTotalFat) {
+      conditions.push(gte(recipes.totalFat, searchRecipeDto.minTotalFat));
+    }
+
+    if (searchRecipeDto.maxTotalFat) {
+      conditions.push(lte(recipes.totalFat, searchRecipeDto.maxTotalFat));
+    }
+
+    if (searchRecipeDto.minSugar) {
+      conditions.push(gte(recipes.sugar, searchRecipeDto.minSugar));
+    }
+
+    if (searchRecipeDto.maxSugar) {
+      conditions.push(lte(recipes.sugar, searchRecipeDto.maxSugar));
+    }
+
+    if (searchRecipeDto.minSodium) {
+      conditions.push(gte(recipes.sodium, searchRecipeDto.minSodium));
+    }
+
+    if (searchRecipeDto.maxSodium) {
+      conditions.push(lte(recipes.sodium, searchRecipeDto.maxSodium));
+    }
+
+    if (searchRecipeDto.minProtein) {
+      conditions.push(gte(recipes.protein, searchRecipeDto.minProtein));
+    }
+
+    if (searchRecipeDto.maxProtein) {
+      conditions.push(lte(recipes.protein, searchRecipeDto.maxProtein));
+    }
+
+    if (searchRecipeDto.minSaturatedFat) {
+      conditions.push(
+        gte(recipes.saturatedFat, searchRecipeDto.minSaturatedFat)
+      );
+    }
+
+    if (searchRecipeDto.maxSaturatedFat) {
+      conditions.push(
+        lte(recipes.saturatedFat, searchRecipeDto.maxSaturatedFat)
+      );
+    }
+
+    if (searchRecipeDto.minCarbohydrates) {
+      conditions.push(
+        gte(recipes.carbohydrates, searchRecipeDto.minCarbohydrates)
+      );
+    }
+
+    if (searchRecipeDto.maxCarbohydrates) {
+      conditions.push(
+        lte(recipes.carbohydrates, searchRecipeDto.maxCarbohydrates)
+      );
+    }
+
+    if (searchRecipeDto.minFiber) {
+      conditions.push(gte(recipes.fiber, searchRecipeDto.minFiber));
+    }
+
+    if (searchRecipeDto.maxFiber) {
+      conditions.push(lte(recipes.fiber, searchRecipeDto.maxFiber));
+    }
+
+    if (searchRecipeDto.minCholesterol) {
+      conditions.push(gte(recipes.cholesterol, searchRecipeDto.minCholesterol));
+    }
+
+    if (searchRecipeDto.maxCholesterol) {
+      conditions.push(lte(recipes.cholesterol, searchRecipeDto.maxCholesterol));
+    }
+
+    if (searchRecipeDto.minSteps) {
+      conditions.push(gte(recipes.stepsCount, searchRecipeDto.minSteps));
+    }
+
+    if (searchRecipeDto.maxSteps) {
+      conditions.push(lte(recipes.stepsCount, searchRecipeDto.maxSteps));
+    }
+
+    if (searchRecipeDto.minPreparationTime) {
+      conditions.push(
+        gte(recipes.preparationTime, searchRecipeDto.minPreparationTime)
+      );
+    }
+
+    if (searchRecipeDto.maxPreparationTime) {
+      conditions.push(
+        lte(recipes.preparationTime, searchRecipeDto.maxPreparationTime)
+      );
+    }
+
+    if (searchRecipeDto.minCookingTime) {
+      conditions.push(gte(recipes.cookingTime, searchRecipeDto.minCookingTime));
+    }
+
+    if (searchRecipeDto.maxCookingTime) {
+      conditions.push(lte(recipes.cookingTime, searchRecipeDto.maxCookingTime));
+    }
+
+    if (searchRecipeDto.minDate) {
+      conditions.push(gte(recipes.created_at, searchRecipeDto.minDate));
+    }
+
+    if (searchRecipeDto.maxDate) {
+      conditions.push(lte(recipes.created_at, searchRecipeDto.maxDate));
+    }
+
+    if (searchRecipeDto.difficulty) {
+      conditions.push(inArray(recipes.difficulty, searchRecipeDto.difficulty));
+    }
+
+    if (searchRecipeDto.tags) {
+      conditions.push(sql`${recipes.tags} @> ${searchRecipeDto.tags}`);
+    }
+
+    if (conditions.length > 1) {
+      return this.db
+        .select(this.shortRecipeObject)
+        .from(recipes)
+        .leftJoin(users, eq(users.id, recipes.authorID))
+        .where(and(...conditions))
+        .limit(10)
+        .offset(searchRecipeDto.offset ?? 0);
+    }
+
+    if (conditions.length === 1) {
+      return this.db
+        .select(this.shortRecipeObject)
+        .from(recipes)
+        .leftJoin(users, eq(users.id, recipes.authorID))
+        .where(conditions[0])
+        .limit(10)
+        .offset(searchRecipeDto.offset ?? 0);
+    }
+
+    return this.db
+      .select(this.shortRecipeObject)
+      .from(recipes)
+      .leftJoin(users, eq(users.id, recipes.authorID))
+      .limit(10)
+      .offset(searchRecipeDto.offset ?? 0);
+  }
+
+  recommend() {
+    return this.db
+      .select(this.shortRecipeObject)
+      .from(recipes)
+      .orderBy(sql`RANDOM()`)
+      .limit(10);
+  }
+
+  findOne(id: number) {
+    return SqlShortcuts.first(
+      this.db
+        .select({
+          id: recipes.id,
+          author: SqlShortcuts.userObject,
+          name: recipes.name,
+          description: recipes.description,
+          ingredients: recipes.ingredients,
+          steps: recipes.steps,
+          preparationTime: recipes.preparationTime,
+          cookingTime: recipes.cookingTime,
+          source: recipes.source,
+          images: recipes.images,
+          tags: recipes.tags,
+          calories: recipes.calories,
+          carbohydrates: recipes.carbohydrates,
+          fiber: recipes.fiber,
+          protein: recipes.protein,
+          saturatedFat: recipes.saturatedFat,
+          totalFat: recipes.totalFat,
+          sodium: recipes.sodium,
+          sugar: recipes.sugar,
+          cholesterol: recipes.cholesterol,
+          difficulty: recipes.difficulty
+        })
+        .from(recipes)
+        .leftJoin(users, eq(users.id, recipes.authorID))
+        .where(eq(recipes.id, id))
+    );
+  }
+
+  async update(id: number, updateRecipeDto: UpdateRecipeDto) {
+    await this.db
+      .update(recipes)
+      .set({
+        name: updateRecipeDto.name,
+        description: updateRecipeDto.description,
+        ingredientsCount: updateRecipeDto.ingredients?.length,
+        tags: updateRecipeDto.tags,
+        preparationTime: updateRecipeDto.preparationTime,
+        cookingTime: updateRecipeDto.cookingTime,
+        steps: updateRecipeDto.steps,
+        stepsCount: updateRecipeDto.steps?.length,
+        ingredients: updateRecipeDto.ingredients,
+        calories: updateRecipeDto.calories,
+        carbohydrates: updateRecipeDto.carbohydrates,
+        fiber: updateRecipeDto.fiber,
+        protein: updateRecipeDto.protein,
+        saturatedFat: updateRecipeDto.saturatedFat,
+        totalFat: updateRecipeDto.totalFat,
+        sodium: updateRecipeDto.sodium,
+        sugar: updateRecipeDto.sugar,
+        cholesterol: updateRecipeDto.cholesterol,
+        difficulty: updateRecipeDto.difficulty
+      })
+      .where(and(eq(recipes.id, id), eq(recipes.authorID, id)));
+  }
+
+  async remove(id: number) {
+    await this.db
+      .delete(recipes)
+      .where(and(eq(recipes.id, id), eq(recipes.authorID, id)));
+  }
+}
