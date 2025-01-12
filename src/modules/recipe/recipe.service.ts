@@ -240,7 +240,8 @@ export class RecipeService extends DBService {
           sodium: recipes.sodium,
           sugar: recipes.sugar,
           cholesterol: recipes.cholesterol,
-          difficulty: recipes.difficulty
+          difficulty: recipes.difficulty,
+          authorName: recipes.authorName
         })
         .from(recipes)
         .leftJoin(users, eq(users.id, recipes.authorID))
