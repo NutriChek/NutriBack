@@ -3,7 +3,7 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { DBService } from '../../common/services/db.service';
 import { recipes } from '@db/recipes';
-import { and, eq, gt, gte, inArray, lte, SQL, sql } from 'drizzle-orm';
+import { and, eq, gte, inArray, lte, SQL, sql } from 'drizzle-orm';
 import { users } from '@db/users';
 import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
 import { SearchRecipeDto } from './dto/search-recipe.dto';
@@ -14,7 +14,7 @@ export class RecipeService extends DBService {
     id: recipes.id,
     author: SqlShortcuts.userObject,
     name: recipes.name,
-    description: recipes.description,
+    description: recipes.recipeDescription,
     cookingTime: recipes.cookingTime,
     images: recipes.images,
     tags: recipes.tags,
@@ -27,7 +27,7 @@ export class RecipeService extends DBService {
   async create(createRecipeDto: CreateRecipeDto) {
     await this.db.insert(recipes).values({
       name: createRecipeDto.name,
-      description: createRecipeDto.description,
+      recipeDescription: createRecipeDto.description,
       ingredientsCount: createRecipeDto.ingredients.length,
       tags: createRecipeDto.tags,
       preparationTime: createRecipeDto.preparationTime,
@@ -163,11 +163,11 @@ export class RecipeService extends DBService {
     }
 
     if (searchRecipeDto.minDate) {
-      conditions.push(gte(recipes.created_at, searchRecipeDto.minDate));
+      conditions.push(gte(recipes.createdAt, searchRecipeDto.minDate));
     }
 
     if (searchRecipeDto.maxDate) {
-      conditions.push(lte(recipes.created_at, searchRecipeDto.maxDate));
+      conditions.push(lte(recipes.createdAt, searchRecipeDto.maxDate));
     }
 
     if (searchRecipeDto.difficulty) {
@@ -221,7 +221,7 @@ export class RecipeService extends DBService {
           id: recipes.id,
           author: SqlShortcuts.userObject,
           name: recipes.name,
-          description: recipes.description,
+          description: recipes.recipeDescription,
           ingredients: recipes.ingredients,
           steps: recipes.steps,
           preparationTime: recipes.preparationTime,
@@ -251,7 +251,7 @@ export class RecipeService extends DBService {
       .update(recipes)
       .set({
         name: updateRecipeDto.name,
-        description: updateRecipeDto.description,
+        recipeDescription: updateRecipeDto.description,
         ingredientsCount: updateRecipeDto.ingredients?.length,
         tags: updateRecipeDto.tags,
         preparationTime: updateRecipeDto.preparationTime,

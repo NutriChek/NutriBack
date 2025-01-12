@@ -1,9 +1,9 @@
 import { integer, pgEnum, pgTable, real, text } from 'drizzle-orm/pg-core';
 import { users } from '@db/users';
 
-const genderEnum = pgEnum('gender_enum', ['male', 'female']);
+export const genderEnum = pgEnum('gender_enum', ['male', 'female']);
 
-const dietEnum = pgEnum('diet_enum', [
+export const dietEnum = pgEnum('diet_enum', [
   'no_diet',
   'vegetarian',
   'vegan',
