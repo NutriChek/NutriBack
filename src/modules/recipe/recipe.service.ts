@@ -3,7 +3,7 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { DBService } from '../../common/services/db.service';
 import { recipes } from '@db/recipes';
-import { and, eq, gte, inArray, lte, SQL, sql } from 'drizzle-orm';
+import { and, eq, gt, gte, inArray, lte, SQL, sql } from 'drizzle-orm';
 import { users } from '@db/users';
 import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
 import { SearchRecipeDto } from './dto/search-recipe.dto';
@@ -211,6 +211,7 @@ export class RecipeService extends DBService {
     return this.db
       .select(this.shortRecipeObject)
       .from(recipes)
+      .where(gt(sql`array_length(${recipes.images})`, 0))
       .leftJoin(users, eq(users.id, recipes.authorID))
       .orderBy(sql`RANDOM()`)
       .limit(10);
