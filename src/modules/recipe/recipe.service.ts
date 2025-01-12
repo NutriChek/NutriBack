@@ -210,6 +210,7 @@ export class RecipeService extends DBService {
     return this.db
       .select(this.shortRecipeObject)
       .from(recipes)
+      .leftJoin(users, eq(users.id, recipes.authorID))
       .orderBy(sql`RANDOM()`)
       .limit(10);
   }
