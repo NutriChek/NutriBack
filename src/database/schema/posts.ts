@@ -1,10 +1,10 @@
 import { date, integer, pgTable, text } from 'drizzle-orm/pg-core';
 import { users } from '@db/users';
-import {recipes} from "@db/recipes";
+import { recipes } from '@db/recipes';
 
 export const posts = pgTable('posts', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
-  source: text('source').notNull(),
+  source: text('source'),
   authorID: integer('author_id').references(() => users.id),
   rating: integer('rating').notNull(),
   recipeID: integer('recipe_id')
@@ -14,5 +14,6 @@ export const posts = pgTable('posts', {
   authorName: text('author_name'),
   originalID: text('original_id'),
   originalRecipeID: text('original_recipe_id'),
-  createdAt: date('created_at').notNull().defaultNow()
+  createdAt: date('created_at').notNull().defaultNow(),
+  likesCount: integer('likes_count')
 });

@@ -7,6 +7,8 @@ import { and, eq, gt, gte, inArray, lte, SQL, sql } from 'drizzle-orm';
 import { users } from '@db/users';
 import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
 import { SearchRecipeDto } from './dto/search-recipe.dto';
+import { posts } from '@db/posts';
+import { alias } from 'drizzle-orm/pg-core';
 
 @Injectable()
 export class RecipeService extends DBService {
@@ -218,11 +220,14 @@ export class RecipeService extends DBService {
   }
 
   findOne(id: number) {
+    const postUser = alias(users, 'post_user');
+
     return SqlShortcuts.first(
       this.db
         .select({
           id: recipes.id,
           author: SqlShortcuts.userObject,
+          posts: sql`JSONB_AGG(JSONB_BUILD_OBJECT('id', ${users.id}, 'username', ${users.username}, 'picture', ${users.picture}))`,
           name: recipes.name,
           description: recipes.recipeDescription,
           ingredients: recipes.ingredients,
@@ -246,6 +251,8 @@ export class RecipeService extends DBService {
         })
         .from(recipes)
         .leftJoin(users, eq(users.id, recipes.authorID))
+        .leftJoin(posts, eq(posts.recipeID, recipes.id))
+        .leftJoin(postUser, eq(posts.authorID, users.id))
         .where(eq(recipes.id, id))
     );
   }

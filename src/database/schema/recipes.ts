@@ -17,7 +17,7 @@ export const difficultyEnum = pgEnum('difficulty_enum', [
 
 export const recipes = pgTable('recipes', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
-  source: text('source').notNull(),
+  source: text('source'),
   originalID: text('original_id'),
   name: text('name').notNull(),
   createdAt: date('created_at').notNull().defaultNow(),
