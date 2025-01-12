@@ -21,7 +21,8 @@ export class RecipeService extends DBService {
     difficulty: recipes.difficulty,
     likesCount: recipes.likesCount,
     ingredientsCount: recipes.ingredientsCount,
-    calories: recipes.calories
+    calories: recipes.calories,
+    authorName: recipes.authorName
   };
 
   async create(createRecipeDto: CreateRecipeDto) {
