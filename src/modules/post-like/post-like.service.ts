@@ -18,11 +18,11 @@ export class PostLikeService extends DBService {
   }
 
   async unlike(id: number) {
-    const response = await this.db
+    const query = await this.db
       .delete(postLikes)
       .where(and(eq(postLikes.postID, id), eq(postLikes.userID, this.userID)));
 
-    if (response.rowCount! > 0) {
+    if (query.rowCount && query.rowCount > 0) {
       await this.db.update(posts).set({
         likesCount: sql`${posts.likesCount} - 1`
       });

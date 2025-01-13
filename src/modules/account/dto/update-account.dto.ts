@@ -1,4 +1,20 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateAccountDto } from './create-account.dto';
+import { IsEmail, IsString, Length, Validate } from 'class-validator';
+import { IsUsernameValid } from '../../../common/constraints/username.constraint';
 
-export class UpdateAccountDto extends PartialType(CreateAccountDto) {}
+export class UpdateAccountDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  @Length(3, 40)
+  @Validate(IsUsernameValid)
+  username: string;
+
+  @IsString()
+  @Length(1, 40)
+  firstName: string;
+
+  @IsString()
+  @Length(1, 40)
+  lastName: string;
+}

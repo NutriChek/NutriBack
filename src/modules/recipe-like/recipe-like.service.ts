@@ -18,13 +18,13 @@ export class RecipeLikeService extends DBService {
   }
 
   async unlike(id: number) {
-    const response = await this.db
+    const query = await this.db
       .delete(recipeLikes)
       .where(
         and(eq(recipeLikes.recipeID, id), eq(recipeLikes.userID, this.userID))
       );
 
-    if (response.rowCount! > 0) {
+    if (query.rowCount! > 0) {
       await this.db.update(recipes).set({
         likesCount: sql`${recipes.likesCount} - 1`
       });

@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './modules/auth/auth.module';
-import { AccountModule } from './modules/account/account.module';
-import { FollowersModule } from './modules/followers/followers.module';
 import { DietaryPlanModule } from './modules/dietary-plan/dietary-plan.module';
 import { AppRoutesModule } from './config/app-routes.module';
 import { DatabaseModule } from './config/database.module';
@@ -13,6 +11,8 @@ import { PostModule } from './modules/post/post.module';
 import { RecipeLikeModule } from './modules/recipe-like/recipe-like.module';
 import { PostLikeModule } from './modules/post-like/post-like.module';
 import { FollowModule } from './modules/follow/follow.module';
+import { PreferencesModule } from './modules/preferences/preferences.module';
+import {AccountModule} from "./modules/account/account.module";
 
 @Module({
   imports: [
@@ -21,13 +21,14 @@ import { FollowModule } from './modules/follow/follow.module';
     LocalStorageModule,
     AccountModule,
     AuthModule,
-    FollowersModule,
+    FollowModule,
     DietaryPlanModule,
     RecipeModule,
     PostModule,
     RecipeLikeModule,
     PostLikeModule,
-    FollowModule
+    FollowModule,
+    PreferencesModule
   ],
   controllers: [],
   providers: [

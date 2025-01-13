@@ -7,5 +7,7 @@ export const users = pgTable('users', {
   lastName: text('last_name').notNull(),
   password: text('password').notNull(),
   picture: text('picture'),
-  username: text('username').notNull()
+  username: text('username').notNull(),
+  followers: integer().notNull().default(0),
+  follows: integer().notNull().default(0)
 });

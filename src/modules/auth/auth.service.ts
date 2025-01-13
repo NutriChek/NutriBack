@@ -5,6 +5,8 @@ import { users } from '@db/users';
 import { eq } from 'drizzle-orm';
 import { BcryptUtils } from '../../common/utils/bcrypt.utils';
 import { RegisterDto } from './dto/register.dto';
+import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
+import { preferences } from '@db/preferences';
 
 @Injectable()
 export class AuthService extends DBService {
@@ -36,12 +38,30 @@ export class AuthService extends DBService {
   }
 
   async register(registerDto: RegisterDto) {
-    await this.db.insert(users).values({
-      email: registerDto.email,
-      password: await BcryptUtils.hashPassword(registerDto.password),
-      firstName: registerDto.firstName,
-      lastName: registerDto.lastName,
-      username: registerDto.username
+    const { id } = (await SqlShortcuts.first(
+      this.db
+        .insert(users)
+        .values({
+          email: registerDto.email,
+          password: await BcryptUtils.hashPassword(registerDto.password),
+          firstName: registerDto.firstName,
+          lastName: registerDto.lastName,
+          username: registerDto.username
+        })
+        .returning({
+          id: users.id
+        })
+    ))!;
+
+    await this.db.insert(preferences).values({
+      id: id,
+      activityLevel: 1,
+      gender: 'male',
+      age: 30,
+      weight: 80,
+      height: 170,
+      diet: 'no_diet',
+      allergens: []
     });
   }
 }

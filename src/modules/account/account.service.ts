@@ -1,26 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
+import { DBService } from '../../common/services/db.service';
+import { users } from '@db/users';
+import { eq } from 'drizzle-orm';
 
 @Injectable()
-export class AccountService {
-  create(createAccountDto: CreateAccountDto) {
-    return 'This action adds a new account';
-  }
-
-  findAll() {
-    return `This action returns all account`;
+export class AccountService extends DBService {
+  findOwn() {
+    return this.db
+      .select({
+        id: users.id,
+        email: users.email,
+        username: users.username,
+        firstName: users.firstName,
+        lastName: users.lastName
+      })
+      .from(users)
+      .where(eq(users.id, this.userID));
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} account`;
+    return this.db
+      .select({
+        username: users.username,
+        picture: users.picture,
+        followers: users.followers,
+        follows: users.follows
+      })
+      .from(users)
+      .where(eq(users.id, id));
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} account`;
+  async update(updateAccountDto: UpdateAccountDto) {
+    await this.db
+      .update(users)
+      .set({
+        email: updateAccountDto.email,
+        username: updateAccountDto.username,
+        firstName: updateAccountDto.firstName,
+        lastName: updateAccountDto.lastName
+      })
+      .where(eq(users.id, this.userID));
   }
 }

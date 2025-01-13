@@ -19,6 +19,6 @@ export const preferences = pgTable('preferences', {
   height: real('height').notNull(),
   gender: genderEnum('gender').notNull(),
   age: integer('age').notNull(),
-  allergens: text('allergens').notNull(),
-  diet: dietEnum('diet').array().notNull()
+  allergens: text('allergens').array().notNull(),
+  diet: dietEnum('diet').notNull()
 });
