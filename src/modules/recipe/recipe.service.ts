@@ -5,16 +5,21 @@ import { DBService } from '../../common/services/db.service';
 import { recipes } from '@db/recipes';
 import { and, eq, gt, gte, inArray, lte, SQL, sql } from 'drizzle-orm';
 import { users } from '@db/users';
-import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
 import { SearchRecipeDto } from './dto/search-recipe.dto';
 import { posts } from '@db/posts';
 import { alias } from 'drizzle-orm/pg-core';
+import {
+  firstRow,
+  jsonAgg,
+  jsonBuildObject,
+  userObject
+} from '../../common/utils/drizzle.utils';
 
 @Injectable()
 export class RecipeService extends DBService {
   private readonly shortRecipeObject = {
     id: recipes.id,
-    author: SqlShortcuts.userObject,
+    author: userObject,
     name: recipes.name,
     description: recipes.recipeDescription,
     cookingTime: recipes.cookingTime,
@@ -222,12 +227,27 @@ export class RecipeService extends DBService {
   findOne(id: number) {
     const postUser = alias(users, 'post_user');
 
-    return SqlShortcuts.first(
+    return firstRow(
       this.db
         .select({
           id: recipes.id,
-          author: SqlShortcuts.userObject,
-          posts: sql`JSONB_AGG(JSONB_BUILD_OBJECT('id', ${users.id}, 'username', ${users.username}, 'picture', ${users.picture}))`,
+          author: userObject,
+          posts: jsonAgg(
+            jsonBuildObject({
+              id: posts.id,
+              author: jsonBuildObject({
+                id: postUser.id,
+                username: postUser.username,
+                picture: postUser.username
+              }),
+              content: posts.content,
+              rating: posts.rating,
+              likesCount: posts.likesCount,
+              source: posts.source,
+              authorName: posts.authorName,
+              createdAt: posts.createdAt
+            })
+          ),
           name: recipes.name,
           description: recipes.recipeDescription,
           ingredients: recipes.ingredients,

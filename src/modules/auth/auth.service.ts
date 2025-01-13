@@ -5,8 +5,8 @@ import { users } from '@db/users';
 import { eq } from 'drizzle-orm';
 import { BcryptUtils } from '../../common/utils/bcrypt.utils';
 import { RegisterDto } from './dto/register.dto';
-import { SqlShortcuts } from '../../common/services/sql-shortcuts.service';
 import { preferences } from '@db/preferences';
+import { firstRow } from '../../common/utils/drizzle.utils';
 
 @Injectable()
 export class AuthService extends DBService {
@@ -38,7 +38,7 @@ export class AuthService extends DBService {
   }
 
   async register(registerDto: RegisterDto) {
-    const { id } = (await SqlShortcuts.first(
+    const { id } = (await firstRow(
       this.db
         .insert(users)
         .values({

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { DBService } from '../../common/services/db.service';
 import { followers } from '@db/followers';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { users } from '@db/users';
+import { decrement, increment } from '../../common/utils/drizzle.utils';
 
 @Injectable()
 export class FollowService extends DBService {
@@ -15,14 +16,14 @@ export class FollowService extends DBService {
     await this.db
       .update(users)
       .set({
-        followers: sql`${users.followers} + 1`
+        followers: increment(users.followers, 1)
       })
       .where(eq(users.id, id));
 
     await this.db
       .update(users)
       .set({
-        follows: sql`${users.followers} + 1`
+        follows: increment(users.follows, 1)
       })
       .where(eq(users.id, this.userID));
   }
@@ -41,14 +42,14 @@ export class FollowService extends DBService {
     await this.db
       .update(users)
       .set({
-        followers: sql`${users.followers} - 1`
+        followers: decrement(users.followers, 1)
       })
       .where(eq(users.id, id));
 
     await this.db
       .update(users)
       .set({
-        follows: sql`${users.followers} - 1`
+        follows: decrement(users.follows, 2)
       })
       .where(eq(users.id, this.userID));
   }

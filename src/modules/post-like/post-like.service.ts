@@ -3,6 +3,7 @@ import { DBService } from '../../common/services/db.service';
 import { postLikes } from '@db/post-likes';
 import { posts } from '@db/posts';
 import { and, eq, sql } from 'drizzle-orm';
+import { decrement, increment } from '../../common/utils/drizzle.utils';
 
 @Injectable()
 export class PostLikeService extends DBService {
@@ -13,7 +14,7 @@ export class PostLikeService extends DBService {
     });
 
     await this.db.update(posts).set({
-      likesCount: sql`${posts.likesCount} + 1`
+      likesCount: increment(posts.likesCount, 1)
     });
   }
 
@@ -24,7 +25,7 @@ export class PostLikeService extends DBService {
 
     if (query.rowCount && query.rowCount > 0) {
       await this.db.update(posts).set({
-        likesCount: sql`${posts.likesCount} - 1`
+        likesCount: decrement(posts.likesCount, 1)
       });
     }
   }

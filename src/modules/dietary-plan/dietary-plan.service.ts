@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDietaryPlanDto } from './dto/create-dietary-plan.dto';
 import { UpdateDietaryPlanDto } from './dto/update-dietary-plan.dto';
+import { CalculatorService } from './calculator.service';
 
 @Injectable()
 export class DietaryPlanService {
+  constructor(private readonly calculatorService: CalculatorService) {}
+
   create(createDietaryPlanDto: CreateDietaryPlanDto) {
     return 'This action adds a new dietaryPlan';
   }
