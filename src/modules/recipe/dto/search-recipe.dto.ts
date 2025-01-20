@@ -3,156 +3,162 @@ import {
   IsIn,
   IsISO8601,
   IsNumber,
+  IsOptional,
   IsString,
+  Length,
   Max,
   Min
 } from 'class-validator';
-import { Optional } from '@nestjs/common';
 
 export class SearchRecipeDto {
   @IsNumber()
   @Min(0)
-  @Optional()
+  @IsOptional()
   minCalories?: number;
 
   @IsNumber()
   @Max(20000)
-  @Optional()
+  @IsOptional()
   maxCalories?: number;
 
   @IsNumber()
   @Min(0)
-  @Optional()
+  @IsOptional()
   minTotalFat?: number;
 
   @IsNumber()
   @Max(20000)
-  @Optional()
+  @IsOptional()
   maxTotalFat?: number;
 
   @IsNumber()
   @Min(0)
-  @Optional()
+  @IsOptional()
   minSugar?: number;
 
   @IsNumber()
   @Max(20000)
-  @Optional()
+  @IsOptional()
   maxSugar?: number;
 
   @IsNumber()
   @Min(0)
-  @Optional()
+  @IsOptional()
   minSodium?: number;
 
   @IsNumber()
   @Max(20000)
-  @Optional()
+  @IsOptional()
   maxSodium?: number;
 
   @IsNumber()
   @Min(0)
-  @Optional()
+  @IsOptional()
   minProtein?: number;
 
   @IsNumber()
   @Max(20000)
-  @Optional()
+  @IsOptional()
   maxProtein?: number;
 
   @IsNumber()
   @Min(0)
-  @Optional()
+  @IsOptional()
   minSaturatedFat?: number;
 
   @IsNumber()
   @Max(20000)
-  @Optional()
+  @IsOptional()
   maxSaturatedFat?: number;
 
   @IsNumber()
   @Min(0)
-  @Optional()
+  @IsOptional()
   minCarbohydrates?: number;
 
   @IsNumber()
   @Max(20000)
-  @Optional()
+  @IsOptional()
   maxCarbohydrates?: number;
 
   @IsNumber()
   @Min(0)
-  @Optional()
+  @IsOptional()
   minFiber?: number;
 
   @IsNumber()
   @Max(20000)
-  @Optional()
+  @IsOptional()
   maxFiber?: number;
 
   @IsNumber()
   @Min(0)
-  @Optional()
+  @IsOptional()
   minCholesterol?: number;
 
   @IsNumber()
   @Max(20000)
-  @Optional()
+  @IsOptional()
   maxCholesterol?: number;
 
   @IsNumber()
   @Min(1)
-  @Optional()
+  @IsOptional()
   minSteps?: number;
 
   @IsNumber()
   @Max(100)
-  @Optional()
+  @IsOptional()
   maxSteps?: number;
 
   @IsNumber()
   @Min(1)
-  @Optional()
+  @IsOptional()
   minPreparationTime?: number;
 
   @IsNumber()
   @Max(60 * 24 * 14)
-  @Optional()
+  @IsOptional()
   maxPreparationTime?: number;
 
   @IsNumber()
   @Min(1)
-  @Optional()
+  @IsOptional()
   minCookingTime?: number;
 
   @IsNumber()
   @Max(60 * 24 * 14)
-  @Optional()
+  @IsOptional()
   maxCookingTime?: number;
 
   @IsISO8601()
-  @Optional()
+  @IsOptional()
   minDate?: string;
 
   @IsISO8601()
-  @Optional()
+  @IsOptional()
   maxDate?: string;
 
   @IsString()
   @IsArray({
     each: true
   })
-  @Optional()
+  @IsOptional()
   tags?: string[];
 
   @IsIn(['easy', 'medium', 'hard'])
   @IsArray({
     each: true
   })
-  @Optional()
+  @IsOptional()
   difficulty?: ('easy' | 'medium' | 'hard')[];
 
   @IsNumber()
-  @Optional()
+  @IsOptional()
   offset?: number;
+
+  @IsString()
+  @IsOptional()
+  @Length(1, 100)
+  search?: string;
 }

@@ -1,9 +1,51 @@
 {
-  "id": "7274de52-d7cd-4321-9921-7bddc778b863",
+  "id": "843a4529-7011-4612-afd1-c90a1c16fde5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.dietary-plan": {
+      "name": "dietary-plan",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "dietary-plan_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "start_date": {
+          "name": "start_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target": {
+          "name": "target",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.featured_recipes": {
       "name": "featured_recipes",
       "schema": "",
@@ -183,13 +225,13 @@
           "name": "source",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "author_id": {
           "name": "author_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "rating": {
           "name": "rating",
@@ -209,12 +251,36 @@
           "primaryKey": false,
           "notNull": true
         },
+        "author_name": {
+          "name": "author_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "original_id": {
+          "name": "original_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "original_recipe_id": {
+          "name": "original_recipe_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "date",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "likes_count": {
+          "name": "likes_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -232,10 +298,10 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "posts_recipe_id_users_id_fk": {
-          "name": "posts_recipe_id_users_id_fk",
+        "posts_recipe_id_recipes_id_fk": {
+          "name": "posts_recipe_id_recipes_id_fk",
           "tableFrom": "posts",
-          "tableTo": "users",
+          "tableTo": "recipes",
           "columnsFrom": [
             "recipe_id"
           ],
@@ -293,15 +359,10 @@
           "primaryKey": false,
           "notNull": true
         },
-        "allergens": {
-          "name": "allergens",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "diet": {
           "name": "diet",
-          "type": "diet_enum[]",
+          "type": "diet_enum",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         }
@@ -405,7 +466,7 @@
           "name": "source",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "original_id": {
           "name": "original_id",
@@ -564,16 +625,38 @@
           "name": "servings",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "serving_size": {
           "name": "serving_size",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "searchable": {
+          "name": "searchable",
+          "type": "tsvector",
+          "primaryKey": false,
+          "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "searchable_idx": {
+          "name": "searchable_idx",
+          "columns": [
+            {
+              "expression": "searchable",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "recipes_author_id_users_id_fk": {
           "name": "recipes_author_id_users_id_fk",
@@ -651,6 +734,20 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "followers": {
+          "name": "followers",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "follows": {
+          "name": "follows",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         }
       },
       "indexes": {},

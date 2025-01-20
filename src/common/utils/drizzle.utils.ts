@@ -19,7 +19,7 @@ export function jsonBuildObject(obj: Record<string, SQLChunk>) {
   const sqlChunks: SQL[] = [];
 
   Object.entries(obj).forEach(([key, value]) => {
-    sqlChunks.push(sql`${key}, ${value}`);
+    sqlChunks.push(sql`${key}::TEXT, TO_JSONB(${value}::TEXT)`);
   });
 
   return sql`JSONB_BUILD_OBJECT(${sql.join(sqlChunks, sql.raw(', '))})`;

@@ -5,36 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1736701328482,
-      "tag": "0000_colorful_william_stryker",
+      "when": 1737391837173,
+      "tag": "0000_abandoned_caretaker",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1736704122560,
-      "tag": "0001_futuristic_scarlet_witch",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1736708933276,
-      "tag": "0002_wooden_toro",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1736709088827,
-      "tag": "0003_hard_bug",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1736793476035,
-      "tag": "0004_soft_squadron_sinister",
+      "when": 1737392822503,
+      "tag": "0001_rare_kitty_pryde",
       "breakpoints": true
     }
   ]

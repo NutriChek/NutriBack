@@ -1,6 +1,12 @@
 CREATE TYPE "public"."diet_enum" AS ENUM('no_diet', 'vegetarian', 'vegan', 'pescatarian');--> statement-breakpoint
 CREATE TYPE "public"."gender_enum" AS ENUM('male', 'female');--> statement-breakpoint
 CREATE TYPE "public"."difficulty_enum" AS ENUM('easy', 'medium', 'hard');--> statement-breakpoint
+CREATE TABLE "dietary-plan" (
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "dietary-plan_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"start_date" date NOT NULL,
+	"target" real NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "featured_recipes" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "featured_recipes_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"recipe_id" integer NOT NULL
@@ -18,12 +24,16 @@ CREATE TABLE "post_likes" (
 --> statement-breakpoint
 CREATE TABLE "posts" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "posts_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
-	"source" text NOT NULL,
-	"author_id" integer NOT NULL,
+	"source" text,
+	"author_id" integer,
 	"rating" integer NOT NULL,
 	"recipe_id" integer NOT NULL,
 	"content" text NOT NULL,
-	"created_at" date DEFAULT now() NOT NULL
+	"author_name" text,
+	"original_id" text,
+	"original_recipe_id" text,
+	"created_at" date DEFAULT now() NOT NULL,
+	"likes_count" integer
 );
 --> statement-breakpoint
 CREATE TABLE "preferences" (
@@ -33,8 +43,7 @@ CREATE TABLE "preferences" (
 	"height" real NOT NULL,
 	"gender" "gender_enum" NOT NULL,
 	"age" integer NOT NULL,
-	"allergens" text NOT NULL,
-	"diet" "diet_enum"[] NOT NULL
+	"diet" "diet_enum" NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "recipe_likes" (
@@ -44,7 +53,7 @@ CREATE TABLE "recipe_likes" (
 --> statement-breakpoint
 CREATE TABLE "recipes" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "recipes_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
-	"source" text NOT NULL,
+	"source" text,
 	"original_id" text,
 	"name" text NOT NULL,
 	"created_at" date DEFAULT now() NOT NULL,
@@ -70,8 +79,9 @@ CREATE TABLE "recipes" (
 	"author_id" integer,
 	"images" text[] NOT NULL,
 	"difficulty" "difficulty_enum" NOT NULL,
-	"servings" integer NOT NULL,
-	"serving_size" integer
+	"servings" integer,
+	"serving_size" integer,
+	"searchable" "tsvector"
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
@@ -82,6 +92,8 @@ CREATE TABLE "users" (
 	"password" text NOT NULL,
 	"picture" text,
 	"username" text NOT NULL,
+	"followers" integer DEFAULT 0 NOT NULL,
+	"follows" integer DEFAULT 0 NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
@@ -91,8 +103,9 @@ ALTER TABLE "followers" ADD CONSTRAINT "followers_followed_id_users_id_fk" FOREI
 ALTER TABLE "post_likes" ADD CONSTRAINT "post_likes_post_id_posts_id_fk" FOREIGN KEY ("post_id") REFERENCES "public"."posts"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "post_likes" ADD CONSTRAINT "post_likes_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "posts" ADD CONSTRAINT "posts_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "posts" ADD CONSTRAINT "posts_recipe_id_users_id_fk" FOREIGN KEY ("recipe_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "posts" ADD CONSTRAINT "posts_recipe_id_recipes_id_fk" FOREIGN KEY ("recipe_id") REFERENCES "public"."recipes"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "preferences" ADD CONSTRAINT "preferences_id_users_id_fk" FOREIGN KEY ("id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "recipe_likes" ADD CONSTRAINT "recipe_likes_recipe_id_posts_id_fk" FOREIGN KEY ("recipe_id") REFERENCES "public"."posts"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "recipe_likes" ADD CONSTRAINT "recipe_likes_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "recipes" ADD CONSTRAINT "recipes_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "recipes" ADD CONSTRAINT "recipes_author_id_users_id_fk" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "searchable_idx" ON "recipes" USING btree ("searchable");

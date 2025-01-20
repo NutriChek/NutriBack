@@ -1,1 +1,0 @@
-ALTER TABLE "recipes" ALTER COLUMN "servings" DROP NOT NULL;

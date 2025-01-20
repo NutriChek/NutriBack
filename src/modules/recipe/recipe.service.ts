@@ -3,7 +3,17 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { DBService } from '../../common/services/db.service';
 import { recipes } from '@db/recipes';
-import { and, eq, gt, gte, inArray, lte, SQL, sql } from 'drizzle-orm';
+import {
+  and,
+  arrayContains,
+  eq,
+  gt,
+  gte,
+  inArray,
+  lte,
+  SQL,
+  sql
+} from 'drizzle-orm';
 import { users } from '@db/users';
 import { SearchRecipeDto } from './dto/search-recipe.dto';
 import { posts } from '@db/posts';
@@ -14,6 +24,7 @@ import {
   jsonBuildObject,
   userObject
 } from '../../common/utils/drizzle.utils';
+import { recipeLikes } from '@db/recipe-likes';
 
 @Injectable()
 export class RecipeService extends DBService {
@@ -183,7 +194,13 @@ export class RecipeService extends DBService {
     }
 
     if (searchRecipeDto.tags) {
-      conditions.push(sql`${recipes.tags} @> ${searchRecipeDto.tags}`);
+      conditions.push(arrayContains(recipes.tags, searchRecipeDto.tags));
+    }
+
+    if (searchRecipeDto.search) {
+      conditions.push(
+        sql`${recipes.searchable} @@ to_tsquery('english', ${searchRecipeDto.search.replace(/[^a-zA-Z0-9\s]/g, '').trim().split(/\s+/).join(' & ')})`
+      );
     }
 
     if (conditions.length > 1) {
@@ -232,7 +249,7 @@ export class RecipeService extends DBService {
         .select({
           id: recipes.id,
           author: userObject,
-          posts: jsonAgg(
+          comments: jsonAgg(
             jsonBuildObject({
               id: posts.id,
               author: jsonBuildObject({
@@ -267,9 +284,17 @@ export class RecipeService extends DBService {
           sugar: recipes.sugar,
           cholesterol: recipes.cholesterol,
           difficulty: recipes.difficulty,
-          authorName: recipes.authorName
+          authorName: recipes.authorName,
+          liked: recipeLikes
         })
         .from(recipes)
+        .leftJoin(
+          recipeLikes,
+          and(
+            eq(recipeLikes.recipeID, recipes.id),
+            eq(recipeLikes.userID, this.userID)
+          )
+        )
         .leftJoin(users, eq(users.id, recipes.authorID))
         .leftJoin(posts, eq(posts.recipeID, recipes.id))
         .leftJoin(postUser, eq(posts.authorID, users.id))
