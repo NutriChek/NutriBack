@@ -22,8 +22,7 @@ export class PostService extends DBService {
       .update(posts)
       .set({
         content: updatePostDto.content,
-        rating: updatePostDto.rating,
-        recipeID: updatePostDto.recipeID
+        rating: updatePostDto.rating
       })
       .where(and(eq(posts.id, id), eq(posts.authorID, this.userID)));
   }
