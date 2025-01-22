@@ -14,7 +14,7 @@ import { AccountModule } from './modules/account/account.module';
 import { UserModule } from './modules/user/user.module';
 import { FollowModule } from './modules/user/follow/follow.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
-import { IntelligenceModule } from './intelligence/intelligence.module';
+import { IntelligenceModule } from './modules/intelligence/intelligence.module';
 
 @Module({
   imports: [
