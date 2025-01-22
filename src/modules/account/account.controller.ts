@@ -1,4 +1,4 @@
-import { Controller, Get, Body, Patch, Param } from '@nestjs/common';
+import { Controller, Get, Body, Patch } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { UpdateAccountDto } from './dto/update-account.dto';
 
@@ -9,11 +9,6 @@ export class AccountController {
   @Get()
   findOwn() {
     return this.accountService.findOwn();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accountService.findOne(+id);
   }
 
   @Patch()

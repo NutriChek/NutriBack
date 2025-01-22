@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { DBService } from '../../common/services/db.service';
-import { and, eq, sql } from 'drizzle-orm';
+import { DBService } from '../../../common/services/db.service';
+import { and, eq } from 'drizzle-orm';
 import { recipeLikes } from '@db/recipe-likes';
 import { recipes } from '@db/recipes';
-import { decrement, increment } from '../../common/utils/drizzle.utils';
+import { decrement, increment } from '../../../common/utils/drizzle.utils';
 
 @Injectable()
 export class RecipeLikeService extends DBService {

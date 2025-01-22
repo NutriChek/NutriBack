@@ -13,22 +13,13 @@ export class AccountService extends DBService {
         email: users.email,
         username: users.username,
         firstName: users.firstName,
-        lastName: users.lastName
+        lastName: users.lastName,
+          picture: users.picture,
+          followers: users.followers,
+          follows: users.follows
       })
       .from(users)
       .where(eq(users.id, this.userID));
-  }
-
-  findOne(id: number) {
-    return this.db
-      .select({
-        username: users.username,
-        picture: users.picture,
-        followers: users.followers,
-        follows: users.follows
-      })
-      .from(users)
-      .where(eq(users.id, id));
   }
 
   async update(updateAccountDto: UpdateAccountDto) {

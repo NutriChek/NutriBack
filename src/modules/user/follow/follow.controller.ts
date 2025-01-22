@@ -1,17 +1,17 @@
 import { Controller, Delete, Param, Post } from '@nestjs/common';
 import { FollowService } from './follow.service';
 
-@Controller('follow')
+@Controller('user/:id/follow')
 export class FollowController {
   constructor(private readonly followService: FollowService) {}
 
-  @Post(':id')
-  follow(@Param('id') id: string) {
+  @Post()
+  follow(@Param() id: string) {
     return this.followService.follow(+id);
   }
 
-  @Delete(':id')
-  unfollow(@Param('id') id: string) {
+  @Delete()
+  unfollow(@Param() id: string) {
     return this.followService.unfollow(+id);
   }
 }

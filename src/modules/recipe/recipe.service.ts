@@ -241,6 +241,14 @@ export class RecipeService extends DBService {
       .limit(10);
   }
 
+  getLikedRecipes() {
+    return this.db
+      .select(this.shortRecipeObject)
+      .from(recipeLikes)
+      .where(eq(recipeLikes.userID, this.userID))
+      .innerJoin(recipes, eq(recipes.id, recipeLikes.recipeID));
+  }
+
   findOne(id: number) {
     const postUser = alias(users, 'post_user');
 

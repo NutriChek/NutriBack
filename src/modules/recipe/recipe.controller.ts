@@ -10,7 +10,7 @@ import {
 import { RecipeService } from './recipe.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
-import {SearchRecipeDto} from "./dto/search-recipe.dto";
+import { SearchRecipeDto } from './dto/search-recipe.dto';
 
 @Controller('recipe')
 export class RecipeController {
@@ -29,6 +29,11 @@ export class RecipeController {
   @Get('recommend')
   recommend() {
     return this.recipeService.recommend();
+  }
+
+  @Get('liked')
+  getLikedRecipes() {
+    return this.recipeService.getLikedRecipes();
   }
 
   @Get(':id')
