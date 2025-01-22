@@ -11,17 +11,19 @@ import {
   gte,
   inArray,
   lte,
-  SQL,
-  sql
+  SQL
 } from 'drizzle-orm';
 import { users } from '@db/users';
 import { SearchRecipeDto } from './dto/search-recipe.dto';
 import { posts } from '@db/posts';
 import { alias } from 'drizzle-orm/pg-core';
 import {
+  arrayLength,
   firstRow,
   jsonAgg,
   jsonBuildObject,
+  random,
+  tsMatches,
   userObject
 } from '../../common/utils/drizzle.utils';
 import { recipeLikes } from '@db/recipe-likes';
@@ -70,8 +72,8 @@ export class RecipeService extends DBService {
     });
   }
 
-  search(searchRecipeDto: SearchRecipeDto) {
-    const conditions: SQL[] = [];
+  search(searchRecipeDto: SearchRecipeDto, cursor: number) {
+    const conditions: SQL[] = [gt(recipes.id, cursor)];
 
     if (searchRecipeDto.minCalories) {
       conditions.push(gte(recipes.calories, searchRecipeDto.minCalories));
@@ -199,7 +201,14 @@ export class RecipeService extends DBService {
 
     if (searchRecipeDto.search) {
       conditions.push(
-        sql`${recipes.searchable} @@ to_tsquery('english', ${searchRecipeDto.search.replace(/[^a-zA-Z0-9\s]/g, '').trim().split(/\s+/).join(' & ')})`
+        tsMatches(
+          recipes.searchable,
+          searchRecipeDto.search
+            .replace(/[^a-zA-Z0-9\s]/g, '')
+            .trim()
+            .split(/\s+/)
+            .join(' & ')
+        )
       );
     }
 
@@ -213,20 +222,11 @@ export class RecipeService extends DBService {
         .offset(searchRecipeDto.offset ?? 0);
     }
 
-    if (conditions.length === 1) {
-      return this.db
-        .select(this.shortRecipeObject)
-        .from(recipes)
-        .leftJoin(users, eq(users.id, recipes.authorID))
-        .where(conditions[0])
-        .limit(10)
-        .offset(searchRecipeDto.offset ?? 0);
-    }
-
     return this.db
       .select(this.shortRecipeObject)
       .from(recipes)
       .leftJoin(users, eq(users.id, recipes.authorID))
+      .where(conditions[0])
       .limit(10)
       .offset(searchRecipeDto.offset ?? 0);
   }
@@ -235,18 +235,25 @@ export class RecipeService extends DBService {
     return this.db
       .select(this.shortRecipeObject)
       .from(recipes)
-      .where(gt(sql`array_length(${recipes.images})`, 0))
+      .where(gt(arrayLength(recipes.images), 0))
       .leftJoin(users, eq(users.id, recipes.authorID))
-      .orderBy(sql`RANDOM()`)
+      .orderBy(random())
       .limit(10);
   }
 
-  getLikedRecipes() {
-    return this.db
+  async getLikedRecipes(cursor: number) {
+    const likedRecipes = await this.db
       .select(this.shortRecipeObject)
       .from(recipeLikes)
-      .where(eq(recipeLikes.userID, this.userID))
-      .innerJoin(recipes, eq(recipes.id, recipeLikes.recipeID));
+      .where(and(gt(recipes.id, cursor), eq(recipeLikes.userID, this.userID)))
+      .orderBy(recipes.id)
+      .innerJoin(recipes, eq(recipes.id, recipeLikes.recipeID))
+      .limit(20);
+
+    return {
+      recipes: likedRecipes,
+      cursor: likedRecipes.length < 20 ? null : likedRecipes.at(-1)!.id
+    };
   }
 
   findOne(id: number) {
@@ -257,7 +264,7 @@ export class RecipeService extends DBService {
         .select({
           id: recipes.id,
           author: userObject,
-          comments: jsonAgg(
+          posts: jsonAgg(
             jsonBuildObject({
               id: posts.id,
               author: jsonBuildObject({

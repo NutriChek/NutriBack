@@ -5,7 +5,8 @@ import {
   Body,
   Patch,
   Param,
-  Delete
+  Delete,
+  Query
 } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
@@ -22,8 +23,8 @@ export class RecipeController {
   }
 
   @Post('search')
-  search(@Body() searchRecipeDto: SearchRecipeDto) {
-    return this.recipeService.search(searchRecipeDto);
+  search(@Body() searchRecipeDto: SearchRecipeDto, @Query() cursor?: string) {
+    return this.recipeService.search(searchRecipeDto, +(cursor ?? 0));
   }
 
   @Get('recommend')
@@ -32,8 +33,8 @@ export class RecipeController {
   }
 
   @Get('liked')
-  getLikedRecipes() {
-    return this.recipeService.getLikedRecipes();
+  getLikedRecipes(@Query() cursor?: string) {
+    return this.recipeService.getLikedRecipes(+(cursor ?? 0));
   }
 
   @Get(':id')

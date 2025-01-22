@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException
+} from '@nestjs/common';
 import { DBService } from '../../common/services/db.service';
 import { JwtService } from '@nestjs/jwt';
 import { users } from '@db/users';
@@ -38,30 +43,42 @@ export class AuthService extends DBService {
   }
 
   async register(registerDto: RegisterDto) {
-    const { id } = (await firstRow(
-      this.db
-        .insert(users)
-        .values({
-          email: registerDto.email,
-          password: await BcryptUtils.hashPassword(registerDto.password),
-          firstName: registerDto.firstName,
-          lastName: registerDto.lastName,
-          username: registerDto.username
-        })
-        .returning({
-          id: users.id
-        })
-    ))!;
+    try {
+      const { id } = (await firstRow(
+        this.db
+          .insert(users)
+          .values({
+            email: registerDto.email,
+            password: await BcryptUtils.hashPassword(registerDto.password),
+            firstName: registerDto.firstName,
+            lastName: registerDto.lastName,
+            username: registerDto.username
+          })
+          .returning({
+            id: users.id
+          })
+      ))!;
 
-    await this.db.insert(preferences).values({
-      id: id,
-      activityLevel: 1,
-      gender: 'male',
-      age: 30,
-      weight: 80,
-      height: 170,
-      diet: 'no_diet',
-      allergens: []
-    });
+      await this.db.insert(preferences).values({
+        id: id,
+        activityLevel: 1,
+        gender: 'male',
+        age: 30,
+        weight: 80,
+        height: 170,
+        diet: 'no_diet',
+        allergens: []
+      });
+    } catch (e) {
+      if (e.code === '23505') {
+        const column = (e.detail as string).match(/\((.*?)\)/)![1];
+
+        throw new ConflictException({
+          message: `${column} already exists`
+        });
+      }
+
+      throw new InternalServerErrorException();
+    }
   }
 }

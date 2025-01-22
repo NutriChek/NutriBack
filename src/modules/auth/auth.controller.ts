@@ -31,9 +31,9 @@ export class AuthController {
 
   @Post('register')
   @Public()
-  @HttpCode(200)
   @ApiOperation({
-    description: 'Verifies email uniqueness and creates an account',
+    description:
+      'Verifies email and username uniqueness and creates an account',
     summary: 'Register'
   })
   register(@Body() registerDto: RegisterDto) {

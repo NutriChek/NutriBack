@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Get,
+  Query
+} from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -10,6 +19,11 @@ export class PostController {
   @Post()
   create(@Body() createPostDto: CreatePostDto) {
     return this.postService.create(createPostDto);
+  }
+
+  @Get()
+  findMany(@Query() cursor?: string) {
+    return this.postService.findMany(+(cursor ?? 0));
   }
 
   @Patch(':id')

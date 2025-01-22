@@ -1,6 +1,10 @@
 import { AnyColumn, SQL, sql, SQLChunk } from 'drizzle-orm';
 import { users } from '@db/users';
 
+export function random() {
+  return sql`RANDOM()`;
+}
+
 export function increment(column: AnyColumn, value: number) {
   return sql`${column} + ${value}`;
 }
@@ -34,3 +38,11 @@ export const userObject = jsonBuildObject({
   username: users.username,
   picture: users.picture
 });
+
+export function tsMatches(tsVector: SQLChunk, tsQuery: SQLChunk) {
+  return sql`${tsVector} @@ to_tsquery('english', ${tsQuery})`;
+}
+
+export function arrayLength(array: SQLChunk) {
+  return sql`array_length(${array})`;
+}

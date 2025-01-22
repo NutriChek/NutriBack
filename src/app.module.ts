@@ -14,6 +14,7 @@ import { AccountModule } from './modules/account/account.module';
 import { UserModule } from './modules/user/user.module';
 import { FollowModule } from './modules/user/follow/follow.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { IntelligenceModule } from './intelligence/intelligence.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
     PostLikeModule,
     PreferencesModule,
     UserModule,
-    FollowModule
+    FollowModule,
+    IntelligenceModule
   ],
   controllers: [],
   providers: [

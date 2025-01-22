@@ -15,6 +15,13 @@
       "when": 1737392822503,
       "tag": "0001_rare_kitty_pryde",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1737565315939,
+      "tag": "0002_silly_zemo",
+      "breakpoints": true
     }
   ]
 }
