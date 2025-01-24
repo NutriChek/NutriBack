@@ -11,7 +11,6 @@ import {
   gte,
   inArray,
   lte,
-  sql,
   SQL
 } from 'drizzle-orm';
 import { users } from '@db/users';
@@ -37,6 +36,7 @@ export class RecipeService extends DBService {
     name: recipes.name,
     description: recipes.recipeDescription,
     cookingTime: recipes.cookingTime,
+    preparationTime: recipes.preparationTime,
     images: recipes.images,
     tags: recipes.tags,
     difficulty: recipes.difficulty,
