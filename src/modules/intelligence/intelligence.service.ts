@@ -19,9 +19,7 @@ export class IntelligenceService extends DBService {
 
   scanToLogMeal(scanToLogDto: ScanToLogDto) {}
 
-  generateRecipe(generateRecipeDto: GenerateRecipeDto, res: Response) {
-    return this.geminiService.generateContent(res);
-  }
+  generateRecipe(generateRecipeDto: GenerateRecipeDto, res: Response) {}
 
   modifyRecipe(modifyRecipeDto: ModifyRecipeDto) {}
 }

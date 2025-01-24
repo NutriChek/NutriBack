@@ -43,6 +43,6 @@ export function tsMatches(tsVector: SQLChunk, tsQuery: SQLChunk) {
   return sql`${tsVector} @@ to_tsquery('english', ${tsQuery})`;
 }
 
-export function arrayLength(array: SQLChunk) {
-  return sql`array_length(${array})`;
+export function cardinality(array: SQLChunk) {
+  return sql`cardinality(${array})`;
 }

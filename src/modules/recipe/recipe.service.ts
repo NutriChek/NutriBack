@@ -11,6 +11,7 @@ import {
   gte,
   inArray,
   lte,
+  sql,
   SQL
 } from 'drizzle-orm';
 import { users } from '@db/users';
@@ -18,7 +19,7 @@ import { SearchRecipeDto } from './dto/search-recipe.dto';
 import { posts } from '@db/posts';
 import { alias } from 'drizzle-orm/pg-core';
 import {
-  arrayLength,
+  cardinality,
   firstRow,
   jsonAgg,
   jsonBuildObject,
@@ -235,7 +236,7 @@ export class RecipeService extends DBService {
     return this.db
       .select(this.shortRecipeObject)
       .from(recipes)
-      .where(gt(arrayLength(recipes.images), 0))
+      .where(gt(cardinality(recipes.images), 0))
       .leftJoin(users, eq(users.id, recipes.authorID))
       .orderBy(random())
       .limit(10);
