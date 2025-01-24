@@ -22,6 +22,13 @@
       "when": 1737565315939,
       "tag": "0002_silly_zemo",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1737715092917,
+      "tag": "0003_salty_sinister_six",
+      "breakpoints": true
     }
   ]
 }

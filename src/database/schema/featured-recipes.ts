@@ -5,5 +5,7 @@ export const featuredRecipes = pgTable('featured_recipes', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
   recipeID: integer('recipe_id')
     .notNull()
-    .references(() => recipes.id)
+    .references(() => recipes.id, {
+      onDelete: 'cascade'
+    })
 });

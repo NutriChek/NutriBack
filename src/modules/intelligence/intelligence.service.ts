@@ -13,6 +13,8 @@ export class IntelligenceService extends DBService {
     super();
   }
 
+  chat() {}
+
   scanToCreateRecipe(scanToCreateDto: ScanToCreateDto) {}
 
   scanToLogMeal(scanToLogDto: ScanToLogDto) {}

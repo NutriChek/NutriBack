@@ -7,7 +7,9 @@ export const recipeLikes = pgTable(
   {
     recipeID: integer('recipe_id')
       .notNull()
-      .references(() => posts.id),
+      .references(() => posts.id, {
+        onDelete: 'cascade'
+      }),
     userID: integer('user_id')
       .notNull()
       .references(() => users.id)
