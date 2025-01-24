@@ -23,7 +23,10 @@ export class RecipeController {
   }
 
   @Post('search')
-  search(@Body() searchRecipeDto: SearchRecipeDto, @Query() cursor?: string) {
+  search(
+    @Body() searchRecipeDto: SearchRecipeDto,
+    @Query('cursor') cursor?: string
+  ) {
     return this.recipeService.search(searchRecipeDto, +(cursor ?? 0));
   }
 

@@ -223,6 +223,8 @@ export class RecipeService extends DBService {
         .offset(searchRecipeDto.offset ?? 0);
     }
 
+    console.log(333);
+
     return this.db
       .select(this.shortRecipeObject)
       .from(recipes)
