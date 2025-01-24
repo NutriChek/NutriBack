@@ -3,14 +3,14 @@ import { UpdatePreferenceDto } from './dto/update-preference.dto';
 import { DBService } from '../../common/services/db.service';
 import { preferences } from '@db/preferences';
 import { eq } from 'drizzle-orm';
+import { firstRow } from '../../common/utils/drizzle.utils';
 
 @Injectable()
 export class PreferencesService extends DBService {
   findOne() {
-    return this.db
-      .select()
-      .from(preferences)
-      .where(eq(preferences.id, this.userID));
+    return firstRow(
+      this.db.select().from(preferences).where(eq(preferences.id, this.userID))
+    );
   }
 
   async update(updatePreferenceDto: UpdatePreferenceDto) {

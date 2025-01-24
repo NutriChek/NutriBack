@@ -5,28 +5,24 @@ import { chats } from '@db/chats';
 import { and, eq } from 'drizzle-orm';
 import { users } from '@db/users';
 import { chatMessages } from '@db/chat-messages';
+import { AiService } from '../ai.service';
+import { Response } from 'express';
 
 @Injectable()
 export class ChatService extends DBService {
-  async create(messageDto: MessageDto) {
-    await this.db.insert(chats).values({
-      userID: this.userID,
-      name: ''
-    });
+  constructor(private readonly aiService: AiService) {
+    super();
   }
 
-  async sendMessage(id: number, messageDto: MessageDto) {}
-
-  async regenerateResponse(id: number) {}
-
-  async editMessage(id: number, messageDto: MessageDto) {
-    await this.db
-      .update(chatMessages)
-      .set({
-        content: messageDto.message
-      })
-      .where(and(eq(chats.id, id), eq(users.id, this.userID)));
+  async create(messageDto: MessageDto, res: Response) {
+    const response = await this.aiService.sendMessage(res, [], []);
   }
+
+  async sendMessage(id: number, messageDto: MessageDto, res: Response) {}
+
+  async regenerateResponse(id: number, res: Response) {}
+
+  async editMessage(id: number, messageDto: MessageDto, res: Response) {}
 
   async remove(id: number) {
     await this.db

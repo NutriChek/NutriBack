@@ -4,12 +4,12 @@ import { ScanToLogDto } from './dto/scan-to-log.dto';
 import { GenerateRecipeDto } from './dto/generate-recipe.dto';
 import { ModifyRecipeDto } from './dto/modify-recipe.dto';
 import { DBService } from '../../common/services/db.service';
-import { GeminiService } from './gemini.service';
+import { AiService } from './ai.service';
 import { Response } from 'express';
 
 @Injectable()
 export class IntelligenceService extends DBService {
-  constructor(private readonly geminiService: GeminiService) {
+  constructor(private readonly geminiService: AiService) {
     super();
   }
 
