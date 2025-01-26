@@ -12,9 +12,7 @@ export class IntelligenceService extends DBService {
   constructor(private readonly geminiService: AiService) {
     super();
   }
-
-  chat() {}
-
+  
   scanToCreateRecipe(scanToCreateDto: ScanToCreateDto) {}
 
   scanToLogMeal(scanToLogDto: ScanToLogDto) {}

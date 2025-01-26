@@ -7,6 +7,7 @@ import {
   and,
   arrayContains,
   eq,
+  exists,
   gt,
   gte,
   inArray,
@@ -303,7 +304,7 @@ export class RecipeService extends DBService {
           cholesterol: recipes.cholesterol,
           difficulty: recipes.difficulty,
           authorName: recipes.authorName,
-          liked: recipeLikes
+          liked: recipeLikes.userID
         })
         .from(recipes)
         .leftJoin(
@@ -317,6 +318,7 @@ export class RecipeService extends DBService {
         .leftJoin(posts, eq(posts.recipeID, recipes.id))
         .leftJoin(postUser, eq(posts.authorID, users.id))
         .where(eq(recipes.id, id))
+        .groupBy(recipes.id, users.id, recipeLikes.recipeID, recipeLikes.userID)
     );
   }
 

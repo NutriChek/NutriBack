@@ -30,7 +30,7 @@ export function jsonBuildObject(obj: Record<string, SQLChunk>) {
 }
 
 export function jsonAgg(sqlChunk: SQLChunk) {
-  return sql`JSONB_AGG(${sqlChunk})`;
+  return sql`COALESCE(JSONB_AGG(${sqlChunk}), '[]'::jsonb)`;
 }
 
 export const userObject = jsonBuildObject({

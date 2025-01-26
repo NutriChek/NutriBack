@@ -10,11 +10,6 @@ import { Response } from 'express';
 export class IntelligenceController {
   constructor(private readonly intelligenceService: IntelligenceService) {}
 
-  @Post('chat')
-  chat() {
-    return this.intelligenceService.chat();
-  }
-
   @Post('scan-to-create')
   scanToCreateRecipe(@Body() scanToCreateDto: ScanToCreateDto) {
     return this.intelligenceService.scanToCreateRecipe(scanToCreateDto);

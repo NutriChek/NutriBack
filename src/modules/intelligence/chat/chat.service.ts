@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { DBService } from '../../../common/services/db.service';
 import { MessageDto } from './dto/message.dto';
 import { chats } from '@db/chats';
@@ -7,6 +7,7 @@ import { users } from '@db/users';
 import { chatMessages } from '@db/chat-messages';
 import { AiService } from '../ai.service';
 import { Response } from 'express';
+import { RenameChatDto } from './dto/rename-chat.dto';
 
 @Injectable()
 export class ChatService extends DBService {
@@ -19,6 +20,15 @@ export class ChatService extends DBService {
   }
 
   async sendMessage(id: number, messageDto: MessageDto, res: Response) {}
+
+  async renameChat(id: number, renameChatDto: RenameChatDto) {
+    await this.db
+      .update(chats)
+      .set({
+        name: renameChatDto.name
+      })
+      .where(and(eq(chats.id, id), eq(chats.userID, this.userID)));
+  }
 
   async regenerateResponse(id: number, res: Response) {}
 

@@ -10,6 +10,7 @@ import {
   text
 } from 'drizzle-orm/pg-core';
 import { users } from '@db/users';
+import { relations } from 'drizzle-orm';
 
 export const difficultyEnum = pgEnum('difficulty_enum', [
   'easy',

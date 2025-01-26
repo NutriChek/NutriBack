@@ -10,6 +10,7 @@ import {
 import { ChatService } from './chat.service';
 import { MessageDto } from './dto/message.dto';
 import { Response } from 'express';
+import { RenameChatDto } from './dto/rename-chat.dto';
 
 @Controller('intelligence/chat')
 export class ChatController {
@@ -32,6 +33,11 @@ export class ChatController {
   @Patch(':id')
   regenerateResponse(@Param('id') id: string, @Res() res: Response) {
     return this.chatService.regenerateResponse(+id, res);
+  }
+
+  @Patch('rename/:id')
+  renameChat(@Param('id') id: string, @Body() renameChatDto: RenameChatDto) {
+    return this.chatService.renameChat(+id, renameChatDto);
   }
 
   @Patch(':id')
