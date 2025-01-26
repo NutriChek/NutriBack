@@ -265,7 +265,8 @@ export class RecipeService extends DBService {
   findOne(id: number) {
     const postUser = alias(users, 'post_user');
 
-    return this.db
+    return firstRow(
+      this.db
         .select({
           id: recipes.id,
           author: jsonBuildObject({
@@ -328,7 +329,8 @@ export class RecipeService extends DBService {
         )
         .leftJoin(postUser, eq(posts.authorID, postUser.id))
         .where(eq(recipes.id, id))
-        .groupBy(recipes.id, users.id, recipeLikes.recipeID, recipeLikes.userID).toSQL();
+        .groupBy(recipes.id, users.id, recipeLikes.recipeID, recipeLikes.userID)
+    );
   }
 
   async update(id: number, updateRecipeDto: UpdateRecipeDto) {
