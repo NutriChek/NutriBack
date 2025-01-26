@@ -15,5 +15,5 @@ export const posts = pgTable('posts', {
   originalID: text('original_id'),
   originalRecipeID: text('original_recipe_id'),
   createdAt: date('created_at').notNull().defaultNow(),
-  likesCount: integer('likes_count')
+  likesCount: integer('likes_count').default(0)
 });

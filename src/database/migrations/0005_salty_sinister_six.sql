@@ -1,0 +1,1 @@
+ALTER TABLE "posts" ALTER COLUMN "likes_count" SET DEFAULT 0;

@@ -1,13 +1,13 @@
 import { integer, pgTable, primaryKey } from 'drizzle-orm/pg-core';
-import { posts } from '@db/posts';
 import { users } from '@db/users';
+import { recipes } from '@db/recipes';
 
 export const recipeLikes = pgTable(
   'recipe_likes',
   {
     recipeID: integer('recipe_id')
       .notNull()
-      .references(() => posts.id, {
+      .references(() => recipes.id, {
         onDelete: 'cascade'
       }),
     userID: integer('user_id')

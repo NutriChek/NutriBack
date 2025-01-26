@@ -7,10 +7,10 @@ import {
   and,
   arrayContains,
   eq,
-  exists,
   gt,
   gte,
   inArray,
+  isNotNull,
   lte,
   SQL
 } from 'drizzle-orm';
@@ -20,6 +20,7 @@ import { posts } from '@db/posts';
 import { alias } from 'drizzle-orm/pg-core';
 import {
   cardinality,
+  coalesce,
   firstRow,
   jsonAgg,
   jsonBuildObject,
@@ -28,6 +29,7 @@ import {
   userObject
 } from '../../common/utils/drizzle.utils';
 import { recipeLikes } from '@db/recipe-likes';
+import { postLikes } from '@db/post-likes';
 
 @Injectable()
 export class RecipeService extends DBService {
@@ -267,22 +269,28 @@ export class RecipeService extends DBService {
       this.db
         .select({
           id: recipes.id,
-          author: userObject,
+          author: jsonBuildObject({
+            id: users.id,
+            username: coalesce(users.username, recipes.authorName),
+            picture: users.picture
+          }),
           posts: jsonAgg(
             jsonBuildObject({
               id: posts.id,
               author: jsonBuildObject({
                 id: postUser.id,
-                username: postUser.username,
-                picture: postUser.username
+                username: coalesce(postUser.username, posts.authorName),
+                picture: postUser.picture
               }),
               content: posts.content,
               rating: posts.rating,
               likesCount: posts.likesCount,
               source: posts.source,
+              createdAt: posts.createdAt,
               authorName: posts.authorName,
-              createdAt: posts.createdAt
-            })
+              liked: coalesce(isNotNull(postLikes.userID), false)
+            }),
+            posts.id
           ),
           name: recipes.name,
           description: recipes.recipeDescription,
@@ -303,8 +311,7 @@ export class RecipeService extends DBService {
           sugar: recipes.sugar,
           cholesterol: recipes.cholesterol,
           difficulty: recipes.difficulty,
-          authorName: recipes.authorName,
-          liked: recipeLikes.userID
+          liked: coalesce(isNotNull(recipeLikes.userID), false)
         })
         .from(recipes)
         .leftJoin(
@@ -316,7 +323,11 @@ export class RecipeService extends DBService {
         )
         .leftJoin(users, eq(users.id, recipes.authorID))
         .leftJoin(posts, eq(posts.recipeID, recipes.id))
-        .leftJoin(postUser, eq(posts.authorID, users.id))
+        .leftJoin(
+          postLikes,
+          and(eq(postLikes.postID, posts.id), eq(postLikes.userID, this.userID))
+        )
+        .leftJoin(postUser, eq(posts.authorID, postUser.id))
         .where(eq(recipes.id, id))
         .groupBy(recipes.id, users.id, recipeLikes.recipeID, recipeLikes.userID)
     );

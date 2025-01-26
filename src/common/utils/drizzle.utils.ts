@@ -23,14 +23,14 @@ export function jsonBuildObject(obj: Record<string, SQLChunk>) {
   const sqlChunks: SQL[] = [];
 
   Object.entries(obj).forEach(([key, value]) => {
-    sqlChunks.push(sql`${key}::TEXT, TO_JSONB(${value}::TEXT)`);
+    sqlChunks.push(sql`${key}::TEXT, TO_JSONB(${value})`);
   });
 
   return sql`JSONB_BUILD_OBJECT(${sql.join(sqlChunks, sql.raw(', '))})`;
 }
 
-export function jsonAgg(sqlChunk: SQLChunk) {
-  return sql`COALESCE(JSONB_AGG(${sqlChunk}), '[]'::jsonb)`;
+export function jsonAgg(sqlChunk: SQLChunk, nullKey: SQLChunk) {
+  return sql`COALESCE(JSONB_AGG(${sqlChunk}) FILTER (WHERE ${nullKey} IS NOT NULL), '[]'::jsonb)`;
 }
 
 export const userObject = jsonBuildObject({
@@ -40,9 +40,13 @@ export const userObject = jsonBuildObject({
 });
 
 export function tsMatches(tsVector: SQLChunk, tsQuery: SQLChunk) {
-  return sql`${tsVector} @@ to_tsquery('english', ${tsQuery})`;
+  return sql`${tsVector} @@ TO_TSQUERY('english', ${tsQuery})`;
 }
 
 export function cardinality(array: SQLChunk) {
-  return sql`cardinality(${array})`;
+  return sql`CARDINALITY(${array})`;
+}
+
+export function coalesce(...props: SQLChunk[]) {
+  return sql`COALESCE(${props[0]}, ${props[1]})`;
 }
