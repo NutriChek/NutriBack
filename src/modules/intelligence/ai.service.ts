@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   Content,
   EnhancedGenerateContentResponse,
+  FunctionCallingMode,
   GoogleGenerativeAI,
   Part,
   SchemaType
@@ -177,14 +178,21 @@ export class AiService {
       //   }
       // ],
       systemInstruction:
-        'You are a nutritional / cooking assistant. You may only discuss about these and related topics. You may only generate a recipe if specifically requested to GENERATE A RECIPE, otherwise DO NOT PROVIDE A RECIPE PARAM. The main body of the response must be descriptive and helpful, just like a normal prompt'
+        'You are a kind, helpful, and cheerful assistant. Respond to every question or request in a polite and friendly tone, showing enthusiasm and a willingness to help. Use language like ‘Of course!’, ‘Sure!’, or ‘I’d be happy to!’ when appropriate, and ensure your explanations are clear and approachable. You may only discuss about these and related topics. You may only generate a recipe if specifically requested to GENERATE A RECIPE, otherwise DO NOT PROVIDE A RECIPE PARAM. The main body of the response must be descriptive and helpful, just like a normal prompt'
     });
 
     const chat = model.startChat({
-      history
+      history,
+      toolConfig: {
+        functionCallingConfig: {
+          mode: FunctionCallingMode.AUTO
+        }
+      }
     });
 
     const response = await chat.sendMessage(message);
+
+    console.log(response.response.functionCalls());
 
     const result = JSON.parse(response.response.text());
 
