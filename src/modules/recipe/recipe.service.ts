@@ -270,6 +270,14 @@ export class RecipeService extends DBService {
     };
   }
 
+  getFeaturedRecipes() {
+    return this.db
+      .select(this.shortRecipeObject)
+      .from(recipes)
+      .where(inArray(recipes.originalID, ['79308']))
+      .leftJoin(users, eq(users.id, recipes.authorID));
+  }
+
   findOne(id: number) {
     const postUser = alias(users, 'post_user');
 

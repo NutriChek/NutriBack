@@ -36,11 +36,9 @@ export class AiService {
     return response;
   }
 
-  async sendMessage(
-    res: Response,
-    history: Content[],
-    message: (Part | string)[]
-  ) {
+  async sendMessage(res: Response, history: Content[], message: Part[]) {
+    console.log(history);
+
     const chat = this.model.startChat({
       history
     });

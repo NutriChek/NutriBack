@@ -24,7 +24,11 @@ export class ChatService extends DBService {
     const response = await this.aiService.sendMessage(
       res,
       [],
-      [messageDto.message]
+      [
+        {
+          text: messageDto.message
+        }
+      ]
     );
 
     const name = await this.aiService.generateChatName(messageDto.message);
@@ -42,13 +46,13 @@ export class ChatService extends DBService {
     await this.db.insert(chatMessages).values([
       {
         role: 'user',
-        parts: [messageDto.message],
+        parts: [{ text: messageDto.message }],
         chatID: chat?.id!,
         userID: this.userID
       },
       {
         role: 'user',
-        parts: [response],
+        parts: [{ text: response }],
         chatID: chat?.id!,
         userID: this.userID
       }
@@ -64,7 +68,30 @@ export class ChatService extends DBService {
       .from(chatMessages)
       .where(eq(chatMessages.id, id));
 
-    const response = await this.aiService.sendMessage(res, [], []);
+    const response = await this.aiService.sendMessage(
+      res,
+      history as unknown as any,
+      [
+        {
+          text: messageDto.message
+        }
+      ]
+    );
+
+    await this.db.insert(chatMessages).values([
+      {
+        role: 'user',
+        parts: [{ text: messageDto.message }],
+        chatID: id,
+        userID: this.userID
+      },
+      {
+        role: 'user',
+        parts: [{ text: response }],
+        chatID: id,
+        userID: this.userID
+      }
+    ]);
   }
 
   findMany() {
@@ -113,7 +140,9 @@ export class ChatService extends DBService {
       .where(and(eq(chats.id, id), eq(chats.userID, this.userID)));
   }
 
-  async regenerateResponse(id: number, res: Response) {}
+  async regenerateResponse(id: number, res: Response) {
+
+  }
 
   async editMessage(id: number, messageDto: MessageDto, res: Response) {}
 

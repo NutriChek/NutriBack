@@ -47,6 +47,11 @@ export class RecipeController {
     return this.recipeService.getLikedRecipes(+(cursor ?? 0));
   }
 
+  @Get('featured')
+  getFeaturedRecipes() {
+    return this.recipeService.getFeaturedRecipes();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.recipeService.findOne(+id);
