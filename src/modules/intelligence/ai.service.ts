@@ -12,7 +12,9 @@ import { Response } from 'express';
 export class AiService {
   private genAI = new GoogleGenerativeAI(envConfig.GEMINI_API_KEY);
 
-  private model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  private model = this.genAI.getGenerativeModel({
+    model: envConfig.GEMINI_MODEL
+  });
 
   async sendStream(
     stream: AsyncGenerator<EnhancedGenerateContentResponse>,
@@ -37,15 +39,17 @@ export class AiService {
   }
 
   async sendMessage(res: Response, history: Content[], message: Part[]) {
-    console.log(history);
-
     const chat = this.model.startChat({
       history
     });
 
-    const result = await chat.sendMessageStream(message);
+    const result = await chat.sendMessage(message);
 
-    return this.sendStream(result.stream, res);
+    const text = result.response.text();
+
+    console.log(text);
+
+    return text;
   }
 
   async generateChatName(prompt: string) {

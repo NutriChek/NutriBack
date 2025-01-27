@@ -57,6 +57,10 @@ export class ChatService extends DBService {
         userID: this.userID
       }
     ]);
+
+    res.json({
+      message: response
+    });
   }
 
   async sendMessage(id: number, messageDto: MessageDto, res: Response) {
@@ -92,6 +96,10 @@ export class ChatService extends DBService {
         userID: this.userID
       }
     ]);
+
+    res.json({
+      message: response
+    });
   }
 
   findMany() {
@@ -140,9 +148,7 @@ export class ChatService extends DBService {
       .where(and(eq(chats.id, id), eq(chats.userID, this.userID)));
   }
 
-  async regenerateResponse(id: number, res: Response) {
-
-  }
+  async regenerateResponse(id: number, res: Response) {}
 
   async editMessage(id: number, messageDto: MessageDto, res: Response) {}
 

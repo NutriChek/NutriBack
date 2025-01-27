@@ -41,23 +41,23 @@ export class ChatController {
     return this.chatService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('regenerate/:id')
   regenerateResponse(@Param('id') id: string, @Res() res: Response) {
     return this.chatService.regenerateResponse(+id, res);
   }
 
-  @Patch('rename/:id')
-  renameChat(@Param('id') id: string, @Body() renameChatDto: RenameChatDto) {
-    return this.chatService.renameChat(+id, renameChatDto);
-  }
-
-  @Patch(':id')
+  @Patch('edit/:id')
   editMessage(
     @Param('id') id: string,
     @Body() messageDto: MessageDto,
     @Res() res: Response
   ) {
     return this.chatService.editMessage(+id, messageDto, res);
+  }
+
+  @Patch('rename/:id')
+  renameChat(@Param('id') id: string, @Body() renameChatDto: RenameChatDto) {
+    return this.chatService.renameChat(+id, renameChatDto);
   }
 
   @Delete(':id')
