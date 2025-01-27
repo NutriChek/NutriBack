@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   Post,
@@ -28,6 +29,16 @@ export class ChatController {
     @Res() res: Response
   ) {
     return this.chatService.sendMessage(+id, messageDto, res);
+  }
+
+  @Get()
+  findMany() {
+    return this.chatService.findMany();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.chatService.findOne(+id);
   }
 
   @Patch(':id')

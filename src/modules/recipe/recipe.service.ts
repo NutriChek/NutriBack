@@ -25,8 +25,7 @@ import {
   jsonAgg,
   jsonBuildObject,
   random,
-  tsMatches,
-  userObject
+  tsMatches
 } from '../../common/utils/drizzle.utils';
 import { recipeLikes } from '@db/recipe-likes';
 import { postLikes } from '@db/post-likes';
@@ -35,7 +34,11 @@ import { postLikes } from '@db/post-likes';
 export class RecipeService extends DBService {
   private readonly shortRecipeObject = {
     id: recipes.id,
-    author: userObject,
+    author: jsonBuildObject({
+      id: users.id,
+      username: coalesce(users.username, recipes.authorName),
+      picture: users.picture
+    }),
     name: recipes.name,
     description: recipes.recipeDescription,
     cookingTime: recipes.cookingTime,
@@ -226,8 +229,6 @@ export class RecipeService extends DBService {
         .offset(searchRecipeDto.offset ?? 0);
     }
 
-    console.log(333);
-
     return this.db
       .select(this.shortRecipeObject)
       .from(recipes)
@@ -235,6 +236,13 @@ export class RecipeService extends DBService {
       .where(conditions[0])
       .limit(10)
       .offset(searchRecipeDto.offset ?? 0);
+  }
+
+  findMany() {
+    return this.db
+      .select(this.shortRecipeObject)
+      .from(recipes)
+      .where(eq(recipes.authorID, this.userID));
   }
 
   recommend() {

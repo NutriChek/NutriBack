@@ -36,7 +36,11 @@ export class AiService {
     return response;
   }
 
-  async sendMessage(res: Response, history: Content[], message: Part[]) {
+  async sendMessage(
+    res: Response,
+    history: Content[],
+    message: (Part | string)[]
+  ) {
     const chat = this.model.startChat({
       history
     });
@@ -44,5 +48,13 @@ export class AiService {
     const result = await chat.sendMessageStream(message);
 
     return this.sendStream(result.stream, res);
+  }
+
+  async generateChatName(prompt: string) {
+    const response =
+      await this.model.generateContent(`Generate a title for the following prompt:
+    ${prompt}`);
+
+    return response.response.text();
   }
 }

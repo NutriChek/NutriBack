@@ -6,7 +6,8 @@ import {
   Patch,
   Param,
   Delete,
-  Query
+  Query,
+  HttpCode
 } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
@@ -23,11 +24,17 @@ export class RecipeController {
   }
 
   @Post('search')
+  @HttpCode(200)
   search(
     @Body() searchRecipeDto: SearchRecipeDto,
     @Query('cursor') cursor?: string
   ) {
     return this.recipeService.search(searchRecipeDto, +(cursor ?? 0));
+  }
+
+  @Get()
+  findMany() {
+    return this.recipeService.findMany();
   }
 
   @Get('recommend')
