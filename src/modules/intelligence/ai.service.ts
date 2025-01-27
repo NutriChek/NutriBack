@@ -184,9 +184,15 @@ export class AiService {
       history
     });
 
-    const result = await chat.sendMessage(message);
+    const response = await chat.sendMessage(message);
 
-    return JSON.parse(result.response.text());
+    const result = JSON.parse(response.response.text());
+
+    if (result.recipe) {
+      result.recipe['id'] = -1;
+    }
+
+    return result;
   }
 
   async generateChatName(prompt: string) {
@@ -225,7 +231,12 @@ export class AiService {
       prompt
     ]);
 
-    return JSON.parse(response.response.text());
+    const result = JSON.parse(response.response.text());
+
+    return {
+      ...result,
+      id: -1
+    };
   }
 
   async estimateCalories(file: string) {
@@ -274,6 +285,11 @@ export class AiService {
       }
     ]);
 
-    return JSON.parse(response.response.text());
+    const result = JSON.parse(response.response.text());
+
+    return {
+      ...result,
+      id: -1
+    };
   }
 }
