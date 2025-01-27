@@ -23,6 +23,6 @@ export class IntelligenceController {
     @Param('id') id: string,
     @Body() modifyRecipeDto: ModifyRecipeDto
   ) {
-    return this.intelligenceService.modifyRecipe(modifyRecipeDto);
+    return this.intelligenceService.modifyRecipe(+id, modifyRecipeDto);
   }
 }
