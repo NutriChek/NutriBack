@@ -6,7 +6,6 @@ import { and, eq } from 'drizzle-orm';
 import { users } from '@db/users';
 import { chatMessages } from '@db/chat-messages';
 import { AiService } from '../ai.service';
-import { Response } from 'express';
 import { RenameChatDto } from './dto/rename-chat.dto';
 import {
   firstRow,
@@ -20,9 +19,8 @@ export class ChatService extends DBService {
     super();
   }
 
-  async create(messageDto: MessageDto, res: Response) {
+  async create(messageDto: MessageDto) {
     const response = await this.aiService.sendMessage(
-      res,
       [],
       [
         {
@@ -43,27 +41,35 @@ export class ChatService extends DBService {
         .returning({ id: chats.id })
     );
 
-    await this.db.insert(chatMessages).values([
-      {
-        role: 'user',
-        parts: [{ text: messageDto.message }],
-        chatID: chat?.id!,
-        userID: this.userID
-      },
-      {
-        role: 'model',
-        parts: [{ text: response }],
-        chatID: chat?.id!,
-        userID: this.userID
-      }
-    ]);
+    const [userMessage, modelMessage] = await this.db
+      .insert(chatMessages)
+      .values([
+        {
+          role: 'user',
+          parts: [{ text: messageDto.message }],
+          chatID: chat?.id!,
+          userID: this.userID
+        },
+        {
+          role: 'model',
+          parts: [{ text: response }],
+          chatID: chat?.id!,
+          userID: this.userID
+        }
+      ])
+      .returning({
+        id: chatMessages.id
+      });
 
-    res.json({
-      message: response
-    });
+    return {
+      message: response,
+      chatID: chat?.id,
+      userMessageID: userMessage.id,
+      modelMessageID: modelMessage.id
+    };
   }
 
-  async sendMessage(id: number, messageDto: MessageDto, res: Response) {
+  async sendMessage(id: number, messageDto: MessageDto) {
     const history = await this.db
       .select({
         role: chatMessages.role,
@@ -73,7 +79,6 @@ export class ChatService extends DBService {
       .where(eq(chatMessages.id, id));
 
     const response = await this.aiService.sendMessage(
-      res,
       history as unknown as any,
       [
         {
@@ -82,24 +87,31 @@ export class ChatService extends DBService {
       ]
     );
 
-    await this.db.insert(chatMessages).values([
-      {
-        role: 'user',
-        parts: [{ text: messageDto.message }],
-        chatID: id,
-        userID: this.userID
-      },
-      {
-        role: 'model',
-        parts: [{ text: response }],
-        chatID: id,
-        userID: this.userID
-      }
-    ]);
+    const [userMessage, modelMessage] = await this.db
+      .insert(chatMessages)
+      .values([
+        {
+          role: 'user',
+          parts: [{ text: messageDto.message }],
+          chatID: id,
+          userID: this.userID
+        },
+        {
+          role: 'model',
+          parts: [{ text: response }],
+          chatID: id,
+          userID: this.userID
+        }
+      ])
+      .returning({
+        id: chatMessages.id
+      });
 
-    res.json({
-      message: response
-    });
+    return {
+      message: response,
+      userMessageID: userMessage.id,
+      modelMessageID: modelMessage.id
+    };
   }
 
   findMany() {
@@ -148,9 +160,9 @@ export class ChatService extends DBService {
       .where(and(eq(chats.id, id), eq(chats.userID, this.userID)));
   }
 
-  async regenerateResponse(id: number, res: Response) {}
+  async regenerateResponse(id: number) {}
 
-  async editMessage(id: number, messageDto: MessageDto, res: Response) {}
+  async editMessage(id: number, messageDto: MessageDto) {}
 
   async remove(id: number) {
     await this.db

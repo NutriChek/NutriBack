@@ -150,7 +150,7 @@ export class AiService {
     ]
   };
 
-  async sendMessage(res: Response, history: Content[], message: Part[]) {
+  async sendMessage(history: Content[], message: Part[]) {
     const model = this.genAI.getGenerativeModel({
       model: envConfig.GEMINI_MODEL,
       generationConfig: {

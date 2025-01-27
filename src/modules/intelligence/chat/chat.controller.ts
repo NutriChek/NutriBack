@@ -5,12 +5,10 @@ import {
   Get,
   Param,
   Patch,
-  Post,
-  Res
+  Post
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { MessageDto } from './dto/message.dto';
-import { Response } from 'express';
 import { RenameChatDto } from './dto/rename-chat.dto';
 
 @Controller('intelligence/chat')
@@ -18,17 +16,13 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Post()
-  create(@Body() messageDto: MessageDto, @Res() res: Response) {
-    return this.chatService.create(messageDto, res);
+  create(@Body() messageDto: MessageDto) {
+    return this.chatService.create(messageDto);
   }
 
   @Post(':id')
-  sendMessage(
-    @Param('id') id: string,
-    @Body() messageDto: MessageDto,
-    @Res() res: Response
-  ) {
-    return this.chatService.sendMessage(+id, messageDto, res);
+  sendMessage(@Param('id') id: string, @Body() messageDto: MessageDto) {
+    return this.chatService.sendMessage(+id, messageDto);
   }
 
   @Get()
@@ -42,17 +36,13 @@ export class ChatController {
   }
 
   @Patch('regenerate/:id')
-  regenerateResponse(@Param('id') id: string, @Res() res: Response) {
-    return this.chatService.regenerateResponse(+id, res);
+  regenerateResponse(@Param('id') id: string) {
+    return this.chatService.regenerateResponse(+id);
   }
 
   @Patch('edit/:id')
-  editMessage(
-    @Param('id') id: string,
-    @Body() messageDto: MessageDto,
-    @Res() res: Response
-  ) {
-    return this.chatService.editMessage(+id, messageDto, res);
+  editMessage(@Param('id') id: string, @Body() messageDto: MessageDto) {
+    return this.chatService.editMessage(+id, messageDto);
   }
 
   @Patch('rename/:id')
