@@ -45,7 +45,7 @@ export class AiService {
         description: 'The name of the recipe',
         type: SchemaType.STRING
       },
-      recipeDescription: {
+      description: {
         description: 'A medium sized description of the recipe, without steps',
         type: SchemaType.STRING
       },
@@ -138,7 +138,7 @@ export class AiService {
     },
     required: [
       'name',
-      'recipeDescription',
+      'description',
       'steps',
       'ingredients',
       'preparationTime',

@@ -51,7 +51,7 @@ export class ChatService extends DBService {
         userID: this.userID
       },
       {
-        role: 'user',
+        role: 'model',
         parts: [{ text: response }],
         chatID: chat?.id!,
         userID: this.userID
@@ -90,7 +90,7 @@ export class ChatService extends DBService {
         userID: this.userID
       },
       {
-        role: 'user',
+        role: 'model',
         parts: [{ text: response }],
         chatID: id,
         userID: this.userID
