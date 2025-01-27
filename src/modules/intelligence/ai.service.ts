@@ -1,12 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {
   Content,
   EnhancedGenerateContentResponse,
   GoogleGenerativeAI,
-  Part
+  Part,
+  ResponseSchema,
+  SchemaType
 } from '@google/generative-ai';
 import envConfig from '../../../env.config';
-import { Response } from 'express';
+import {Response} from 'express';
 
 @Injectable()
 export class AiService {
@@ -45,18 +47,32 @@ export class AiService {
 
     const result = await chat.sendMessage(message);
 
-    const text = result.response.text();
-
-    console.log(text);
-
-    return text;
+    return result.response.text();
   }
 
   async generateChatName(prompt: string) {
-    const response =
-      await this.model.generateContent(`Generate a title for the following prompt:
-    ${prompt}`);
+    const model = this.genAI.getGenerativeModel({
+      model: envConfig.GEMINI_MODEL,
+      generationConfig: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          description: 'Prompt title',
+          type: SchemaType.STRING
+        }
+      }
+    });
 
-    return response.response.text();
+    const response = await model.generateContent(
+      `Generate a short title for the following prompt:
+    ${prompt}`
+    );
+
+    return JSON.parse(response.response.text());
+  }
+
+  recipeSchema: ResponseSchema = {
+    description: 'A food recipe corresponding to the given properties',
+    type: SchemaType.OBJECT,
+
   }
 }
