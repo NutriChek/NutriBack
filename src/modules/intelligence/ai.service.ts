@@ -5,6 +5,7 @@ import {
   FunctionCallingMode,
   GoogleGenerativeAI,
   Part,
+  ResponseSchema,
   SchemaType
 } from '@google/generative-ai';
 import envConfig from '../../../env.config';
@@ -36,7 +37,7 @@ export class AiService {
     return response;
   }
 
-  recipeSchema = {
+  recipeSchema: ResponseSchema = {
     description:
       'A food recipe corresponding to the given properties, only if required',
     type: SchemaType.OBJECT,
@@ -59,24 +60,28 @@ export class AiService {
       },
       ingredients: {
         description: 'The list of ingredients for the recipe',
-        type: SchemaType.OBJECT,
-        properties: {
-          name: {
-            description: 'The name of the ingredient',
+        type: SchemaType.ARRAY,
+        items: {
+          description: 'An ingredient with the specified properties',
+          type: SchemaType.OBJECT,
+          properties: {
+            name: {
+              description: 'The name of the ingredient',
 
-            type: SchemaType.STRING
+              type: SchemaType.STRING
+            },
+            quantity: {
+              description: 'The quantity needed of the ingredient',
+              type: SchemaType.NUMBER
+            },
+            unit: {
+              description:
+                'The unit of measure for the quantity, lowercased, using the shortened name',
+              type: SchemaType.STRING
+            }
           },
-          quantity: {
-            description: 'The quantity needed of the ingredient',
-            type: SchemaType.NUMBER
-          },
-          unit: {
-            description:
-              'The unit of measure for the quantity, lowercased, using the shortened name',
-            type: SchemaType.STRING
-          }
-        },
-        required: ['name']
+          required: ['name']
+        }
       },
       preparationTime: {
         description: 'The time it takes to prepare for the recipe',
