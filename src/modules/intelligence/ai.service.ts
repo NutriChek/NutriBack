@@ -51,7 +51,7 @@ export class AiService {
         type: SchemaType.STRING
       },
       steps: {
-        description: 'The list of steps for making the recipe',
+        description: 'The list of steps for    making the recipe',
         type: SchemaType.ARRAY,
         items: {
           description: 'The instructions of the step',
